@@ -1,0 +1,413 @@
+package com.dsib.service.impl;
+
+import com.dsib.common.Pagination;
+import com.dsib.dao.GgAuditConfigMapper;
+import com.dsib.dao.GgAuditMapper;
+import com.dsib.dao.GgBuildingmstHisMapper;
+import com.dsib.dao.GgBuildingmstMapper;
+import com.dsib.dto.UpdateBuildingMst;
+import com.dsib.dto.UpdateBuildingMstOne;
+import com.dsib.entity.GgAuditConfig;
+import com.dsib.entity.GgAuditConfigKey;
+import com.dsib.entity.GgBuildingmst;
+import com.dsib.entity.GgBuildingmstHis;
+import com.dsib.service.GgBuildingMstService;
+import com.dsib.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service(value = "ggBuildingMstService")
+public class GgBuildingMstServiceImpl implements GgBuildingMstService {
+
+    private static final String ONE = "35000";
+    private static final String TOW = "15000";
+    private static final String THREE = "10000";
+
+    @Autowired
+    private GgBuildingmstMapper ggBuildingmstMapper;
+    @Autowired
+    private GgBuildingmstHisMapper ggBuildingmstHisMapper;
+
+
+    @Override
+    public Map<String, Object> initData(Map<String, Object> map) throws Exception {
+        List<GgBuildingmst> ggBuildingmstAll = ggBuildingmstMapper.getGgBuildingmstAll(map);
+        // 总数量
+        int allCount = ggBuildingmstAll.size();
+        int oneCount = 0;
+        int towCount = 0;
+        int threeCount = 0;
+        //改造完成数
+        int allOverCount = 0;
+        int oneOverCount = 0;
+        int towOverCount = 0;
+        int threeOverCount = 0;
+        // 兑付总金额
+        BigDecimal allAmount = new BigDecimal(0);
+        BigDecimal oneAmount = new BigDecimal(0);
+        BigDecimal towAmount = new BigDecimal(0);
+        BigDecimal threeAmount = new BigDecimal(0);
+        //已兑付金额
+        BigDecimal allOverAmount = new BigDecimal(0);
+        BigDecimal oneOverAmount = new BigDecimal(0);
+        BigDecimal towOverAmount = new BigDecimal(0);
+        BigDecimal threeOverAmount = new BigDecimal(0);
+
+        for (GgBuildingmst ggBuildingmst : ggBuildingmstAll) {
+            allAmount = allAmount.add(BigDecimal.valueOf(ggBuildingmst.getSunamount()));
+            allOverAmount = allOverAmount.add(BigDecimal.valueOf(ggBuildingmst.getFinishamount()));
+            switch (ggBuildingmst.getGrade()) {
+                case ONE:
+                    oneCount++;
+                    oneAmount = oneAmount.add(BigDecimal.valueOf(ggBuildingmst.getSunamount()));
+                    oneOverAmount = oneOverAmount.add(BigDecimal.valueOf(ggBuildingmst.getFinishamount()));
+                    if ("3".equals(ggBuildingmst.getProgress())) {
+                        allOverCount++;
+                        oneOverCount++;
+                    }
+                    break;
+                case TOW:
+                    towCount++;
+                    towAmount = towAmount.add(BigDecimal.valueOf(ggBuildingmst.getSunamount()));
+                    towOverAmount = towOverAmount.add(BigDecimal.valueOf(ggBuildingmst.getFinishamount()));
+                    if ("3".equals(ggBuildingmst.getProgress())) {
+                        allOverCount++;
+                        towOverCount++;
+                    }
+                    break;
+                case THREE:
+                    threeCount++;
+                    threeAmount = threeAmount.add(BigDecimal.valueOf(ggBuildingmst.getSunamount()));
+                    threeOverAmount = threeOverAmount.add(BigDecimal.valueOf(ggBuildingmst.getFinishamount()));
+                    if ("3".equals(ggBuildingmst.getProgress())) {
+                        allOverCount++;
+                        threeOverCount++;
+                    }
+                    break;
+                default:
+                    throw new Exception("初始化数据错误");
+            }
+        }
+
+        Map resultMap = new HashMap<>();
+        resultMap.put("allCount", allCount);
+        resultMap.put("oneCount", oneCount);
+        resultMap.put("towCount", towCount);
+        resultMap.put("threeCount", threeCount);
+        resultMap.put("allAmount", allAmount);
+        resultMap.put("oneAmount", oneAmount);
+        resultMap.put("towAmount", towAmount);
+        resultMap.put("threeAmount", threeAmount);
+        resultMap.put("oneOverAmount", oneOverAmount);
+        resultMap.put("towOverAmount", towOverAmount);
+        resultMap.put("threeOverAmount", threeOverAmount);
+        resultMap.put("allOverAmount", allOverAmount);
+        resultMap.put("oneOverCount", oneOverCount);
+        resultMap.put("towOverCount", towOverCount);
+        resultMap.put("threeOverCount", threeOverCount);
+        resultMap.put("allOverCount", allOverCount);
+        // 数量占比
+        resultMap.put("oneCountProportion", methBigDimals(new BigDecimal(String.valueOf(oneCount)), new BigDecimal(String.valueOf(allCount))));
+        resultMap.put("towCountProportion", methBigDimals(new BigDecimal(String.valueOf(towCount)), new BigDecimal(String.valueOf(allCount))));
+        resultMap.put("threeCountProportion", methBigDimals(new BigDecimal(String.valueOf(threeCount)), new BigDecimal(String.valueOf(allCount))));
+        // 数量完占比
+        resultMap.put("allOverProportion", methBigDimals(new BigDecimal(String.valueOf(allOverCount)), new BigDecimal(String.valueOf(allCount))));
+        resultMap.put("oneOverProportion", methBigDimals(new BigDecimal(String.valueOf(oneOverCount)), new BigDecimal(String.valueOf(allOverCount))));
+        resultMap.put("towOverProportion", methBigDimals(new BigDecimal(String.valueOf(towOverCount)), new BigDecimal(String.valueOf(allOverCount))));
+        resultMap.put("threeOverProportion", methBigDimals(new BigDecimal(String.valueOf(threeOverCount)), new BigDecimal(String.valueOf(allOverCount))));
+        // 数量完成比
+        resultMap.put("oneProportion", methBigDimals(new BigDecimal(String.valueOf(oneOverCount)), new BigDecimal(String.valueOf(allCount))));
+        resultMap.put("towProportion", methBigDimals(new BigDecimal(String.valueOf(towOverCount)), new BigDecimal(String.valueOf(allCount))));
+        resultMap.put("threeProportion", methBigDimals(new BigDecimal(String.valueOf(threeOverCount)), new BigDecimal(String.valueOf(allCount))));
+
+        // 应兑付金额占比
+        resultMap.put("completeOneCount", methBigDimals(oneAmount, allAmount));
+        resultMap.put("completeTowCount", methBigDimals(towAmount, allAmount));
+        resultMap.put("completeThreeCount", methBigDimals(threeAmount, allAmount));
+
+        // 兑付金额占比
+        resultMap.put("completeOverOneAmount", methBigDimals(oneOverAmount, allOverAmount));
+        resultMap.put("completeOverTowAmount", methBigDimals(towOverAmount, allOverAmount));
+        resultMap.put("completeOverThreeAmount", methBigDimals(threeOverAmount, allOverAmount));
+
+        // 兑付金额完成比
+        resultMap.put("completeOverOneAmounts", methBigDimals(oneOverAmount, allAmount));
+        resultMap.put("completeOverTowAmounts", methBigDimals(towOverAmount, allAmount));
+        resultMap.put("completeOverThreeAmounts", methBigDimals(threeOverAmount, allAmount));
+
+        resultMap.put("completeAmount", methBigDimals(allOverAmount, allAmount));
+        return resultMap;
+    }
+
+    private String methBigDimals(BigDecimal a, BigDecimal b) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        BigDecimal count = BigDecimal.ZERO;
+        if (b.compareTo(BigDecimal.ZERO) != 0) {
+            count = a.divide(b, 4, BigDecimal.ROUND_HALF_DOWN);
+        }
+        count = count.multiply(new BigDecimal(Double.toString(100)));
+        String format = count.compareTo(BigDecimal.ONE) < 1 ? "0" : df.format(count);
+        return format;
+    }
+
+    @Override
+    public Map<String, Object> getBuildingMstMap(String id){
+        return ggBuildingmstMapper.retrieveBuildingMst(id);
+    }
+
+
+    @Override
+    public UpdateBuildingMst getBuildingMst(String id) {
+        UpdateBuildingMst updateBuildingMst = ggBuildingmstMapper.retrieveBuildingMstBuObject(id);
+//        if(updateBuildingMst == null){
+//            updateBuildingMst = ggBuildingmstHisMapper.getGgBuildingmstHisByBusinessno(businessno);
+//        }
+
+
+        return updateBuildingMst;
+    }
+
+    @Override
+    public GgBuildingmst getBuildingMsts(String id) {
+        return ggBuildingmstMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllBuildingMst(Pagination pagination) {
+        return ggBuildingmstMapper.getGgBuildingmstPage(pagination);
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllBuildingMstjoin(Pagination pagination) {
+        return ggBuildingmstMapper.getGgBuildingmstAllJoin(pagination);
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllBuildingMstjoinMap(Map<String, Object> map) {
+        return ggBuildingmstMapper.getGgBuildingmstAllJoinMap(map);
+    }
+
+    /**
+     * 查看 初始化
+     * @param pagination
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getAllMessageBuildingMst(Pagination pagination) {
+        return ggBuildingmstMapper.getGgMessageBuildingmstPage(pagination);
+    }
+
+    /**
+     * 查看 excel
+     * @param map
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getAllBuildingExcel(Map<String, Object> map) {
+//        return ggBuildingmstMapper.getGgBuildingmstAs(map);
+        return ggBuildingmstMapper.getGgMessageBuildingmstExcel(map);
+    }
+
+
+    // 查看 分页
+    @Override
+    public Pagination getAllMessageBuildingMstContext(Pagination pagination) {
+        List<Map<String, Object>> list;
+        list = ggBuildingmstMapper.getGgMessageBuildingmstPage(pagination);
+        pagination.setResultList(list);
+        return pagination;
+    }
+
+    @Override
+    public Pagination getAllBuildingMstContext(Pagination pagination) {
+        List<Map<String, Object>> list;
+        list = ggBuildingmstMapper.getGgBuildingmstPage(pagination);
+        pagination.setResultList(list);
+        return pagination;
+    }
+
+    @Override
+    public GgBuildingmst getBuildingMstas(String id) {
+        return ggBuildingmstMapper.getByPrimaryKey(id);
+    }
+
+    @Override
+    public List<GgBuildingmst> getBuildingMstas(Map<String, Object> map) {
+
+        return ggBuildingmstMapper.getBuildingMstasByMap(map);
+    }
+
+
+
+    @Override
+    public List<Map<String, Object>> getCityCashStatistics(Pagination pagination) {
+        List<Map<String, Object>> maps = ggBuildingmstMapper.getCityCashStatistics(pagination);
+        for (Map<String, Object> map : maps) {
+            BigDecimal finishAmount = new BigDecimal(map.get("finishAmount").toString());
+            BigDecimal sumAmount = new BigDecimal(map.get("sumAmount").toString());
+            if (sumAmount.equals(BigDecimal.ZERO))
+                map.put("percentage", "0");
+            else
+                map.put("percentage", methBigDimals(finishAmount,sumAmount));
+
+        }
+        return maps;
+    }
+    @Override
+    public void updateBuilding(UpdateBuildingMstOne ggBuildingmst) {
+        if(ggBuildingmst.getId()== null || "".intern().equals(ggBuildingmst.getId())){
+            GgBuildingmstHis buildingHis = new GgBuildingmstHis();
+            this.updateByStatusOne(buildingHis, ggBuildingmst);
+            buildingHis.setStatus("1");
+            ggBuildingmstHisMapper.insert(buildingHis);
+            ggBuildingmstMapper.updateByStatus("1",ggBuildingmst.getId());
+        } else {
+            GgBuildingmstHis ggBuild = ggBuildingmstHisMapper.selectById(ggBuildingmst.getId(),ggBuildingmst.getBusinessno()); // 先查询出对象  todo
+            if (ggBuild == null) {
+                ggBuild = new GgBuildingmstHis();
+                this.updateByStatusOne(ggBuild, ggBuildingmst);
+                ggBuild.setStatus("1");
+                ggBuildingmstHisMapper.insert(ggBuild);
+                ggBuildingmstMapper.updateByStatus("1",ggBuildingmst.getId());// 增加修改主表状态为审核中
+            } else {
+//            只要发生修改,其状态就为1 待审核状态
+                this.updateByStatusOne(ggBuild, ggBuildingmst);
+                ggBuild.setStatus("1");
+                ggBuildingmstHisMapper.updateByPrimaryKeySelective(ggBuild);
+                ggBuildingmstMapper.updateByStatus("1",ggBuildingmst.getId());
+            }
+        }
+    }
+
+    /**
+     * 更新临时表
+     *
+     * @param ggBuildingmstHis 临时表
+     * @param ggBuildingmst    主表
+     * @return 更新后
+     */
+    private void updateByStatusOne(GgBuildingmstHis ggBuildingmstHis, UpdateBuildingMstOne ggBuildingmst) {
+        ggBuildingmstHis.setBusinessno(ggBuildingmstHis.getBusinessno() == null ? StringUtil.getBusinessNo() : ggBuildingmstHis.getBusinessno());
+        ggBuildingmstHis.setId(ggBuildingmst.getId()== null || "".equals(ggBuildingmst.getId()) ? StringUtil.getBusinessNo() : ggBuildingmst.getId());
+        ggBuildingmstHis.setAccount(ggBuildingmst.getAccount());
+        ggBuildingmstHis.setAddress(ggBuildingmst.getAddress());
+        ggBuildingmstHis.setBank(ggBuildingmst.getBank());
+        ggBuildingmstHis.setCity(ggBuildingmst.getCity());
+        ggBuildingmstHis.setCounty(ggBuildingmst.getCounty());
+        //town 审核人角色代码
+        ggBuildingmstHis.setTown(ggBuildingmst.getTown());
+        ggBuildingmstHis.setFinishstatus(ggBuildingmst.getFinishstatus());
+        ggBuildingmstHis.setGrade(ggBuildingmst.getGrade());
+        ggBuildingmstHis.setHouseholder(ggBuildingmst.getHouseholder());
+        ggBuildingmstHis.setIdentityid(ggBuildingmst.getIdentityid());
+        ggBuildingmstHis.setInputtime(ggBuildingmst.getInputtime() == null ? new Date() : ggBuildingmst.getInputtime());
+        ggBuildingmstHis.setInputcode(ggBuildingmst.getInputcode());
+        ggBuildingmstHis.setPeoplenumber(ggBuildingmst.getPeoplenumber());
+        ggBuildingmstHis.setProvince(ggBuildingmst.getProvince());
+        ggBuildingmstHis.setSunamount(ggBuildingmst.getSunamount());
+        ggBuildingmstHis.setStartyear(ggBuildingmst.getStartyear());
+        ggBuildingmstHis.setVillage(ggBuildingmst.getVillage());
+        ggBuildingmstHis.setType(ggBuildingmst.getType());
+        ggBuildingmstHis.setDiscription(ggBuildingmst.getDiscription());
+        ggBuildingmstHis.setFilePath(ggBuildingmst.getFilePath());
+        ggBuildingmstHis.setProgress(ggBuildingmst.getProgress());
+        ggBuildingmstHis.setFinishamount(ggBuildingmst.getFinishamount());
+        ggBuildingmstHis.setStatus(ggBuildingmst.getStatus());
+    }
+
+	@Override
+	public List<GgBuildingmstHis> listBuildingAudits(Pagination pagination) {
+		List<GgBuildingmstHis> list = ggBuildingmstHisMapper.listBuildingAudits(pagination);
+		return list;
+	}
+
+	@Override
+	public GgBuildingmstHis getBuildingMstHisByKey(String businessNo) {
+		GgBuildingmstHis ggBuildingmstHis = ggBuildingmstHisMapper.selectByPrimaryKey(businessNo);
+		return ggBuildingmstHis;
+	}
+
+    @Override
+    public void updateGgBuildingMst(GgBuildingmst ggBuildingmst) {
+        if(ggBuildingmst.getFinishamount() >= ggBuildingmst.getSunamount()){
+            ggBuildingmst.setFinishstatus("1");
+        }
+        ggBuildingmstMapper.updateByPrimaryKeySelective(ggBuildingmst);
+    }
+
+    /**
+     * 修改危房正式表 或 添加正式表
+     * @param ggBuildingmst
+     */
+    @Override
+    @Transactional
+    public void installGgBuilding(UpdateBuildingMstOne ggBuildingmst) {
+        GgBuildingmst building = ggBuildingmstMapper.selectByPrimaryKey(ggBuildingmst.getId());
+        if(building == null){
+            ggBuildingmstMapper.insert(this.getGgBuildingMst(new GgBuildingmst(),ggBuildingmst));
+        }else {
+            ggBuildingmstMapper.updateByPrimaryKey(this.getGgBuildingMst(building, ggBuildingmst));
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> getCityCashStatisticsExcel(Map<String, Object> map) {
+        List<Map<String, Object>> maps = ggBuildingmstMapper.getCityCashStatisticsToMap(map);
+        for (Map<String, Object> m : maps) {
+            BigDecimal finishAmount = new BigDecimal(m.get("已兑付金额").toString());
+            BigDecimal sumAmount = new BigDecimal(m.get("应付金额").toString());
+            if (sumAmount.equals(BigDecimal.ZERO))
+                m.put("兑付率", "0");
+            else
+                m.put("兑付率", methBigDimals(finishAmount,sumAmount));
+
+        }
+        return maps;
+    }
+
+    @Override
+    public int getGgBuildingMstByIdentityId(String identityId) {
+        return ggBuildingmstMapper.retrieveGgBuildingMst(identityId);
+    }
+
+
+    private GgBuildingmst getGgBuildingMst(GgBuildingmst building, UpdateBuildingMstOne updateBuildingMstOne){
+        building.setId(updateBuildingMstOne.getId());
+        building.setHouseholder(updateBuildingMstOne.getHouseholder());
+        building.setIdentityid(updateBuildingMstOne.getIdentityid());
+        building.setPeoplenumber(updateBuildingMstOne.getPeoplenumber());
+        building.setType(updateBuildingMstOne.getType());
+        building.setGrade(updateBuildingMstOne.getGrade());
+        building.setStartyear(updateBuildingMstOne.getStartyear());
+        building.setSunamount(updateBuildingMstOne.getSunamount());
+        building.setBank(updateBuildingMstOne.getBank());
+        building.setAccount(updateBuildingMstOne.getAccount());
+        building.setProvince(updateBuildingMstOne.getProvince());
+        building.setCity(updateBuildingMstOne.getCity());
+        building.setCounty(updateBuildingMstOne.getCounty());
+        building.setTown(updateBuildingMstOne.getTown());
+        building.setVillage(updateBuildingMstOne.getVillage());
+        building.setAddress(updateBuildingMstOne.getAddress());
+        building.setProgress(updateBuildingMstOne.getProgress());
+        building.setFinishamount(updateBuildingMstOne.getFinishamount());
+        building.setFinishstatus(updateBuildingMstOne.getFinishstatus());
+        building.setInputcode(updateBuildingMstOne.getInputcode());
+        building.setInputtime(updateBuildingMstOne.getInputtime() == null || "".intern().equals(updateBuildingMstOne.getInputtime()) ? new Date() : updateBuildingMstOne.getInputtime());
+        building.setUpdatecode(updateBuildingMstOne.getUpdatecode());
+        building.setUpdatetime(updateBuildingMstOne.getUpdatetime());
+        building.setConfirmcode(updateBuildingMstOne.getConfirmcode());
+        building.setConfirmtime(updateBuildingMstOne.getConfirmtime());
+        building.setProgress(updateBuildingMstOne.getProgress());
+        building.setStatus(updateBuildingMstOne.getStatus());
+        return building;
+    }
+
+}

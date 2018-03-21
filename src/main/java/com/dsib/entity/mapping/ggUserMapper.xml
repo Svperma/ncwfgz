@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dsib.dao.GgUserMapper">
+    <sql id="Base_Column_List">
+        `USERCODE`,`USERNAME`,`PASSWORD`,`COMLEVEL`,`ROLE`,`USERIND`,`ADDRESS`,`PROVINCE`,`CITY`,
+        `COUNTY`,`TELEPHONE`,`LINKNAME`,`MOBILE`,`VALIDSTATUS`,`UPDATOR`,`UPDATEDATE`,`REMARK`,
+        `FLAG`,`DIVISION`
+    </sql>
+    <select id="getUser" parameterType="string" resultType="com.dsib.entity.GgUser">
+		select * from GGUSER WHERE USERCODE =#{userCode} AND VALIDSTATUS = '1'
+	</select>
+    <select id="getUserByRemark" parameterType="string" resultType="com.dsib.entity.GgUser">
+		SELECT * FROM GGUSER WHERE USERCODE =#{userCode}
+	</select>
+    <select id="listRoledUser" parameterType="Pagination" resultType="map">
+        SELECT GU.USERCODE,GU.USERNAME,GR.ROLE_CODE ROLECODE,GR.ROLE_NAME ROLENAME FROM GGUSER GU , GGROLE GR
+        WHERE <!-- GU.ROLE NOT IN ('admin','') AND GU.ROLE IS NOT NULL AND  -->GU.VALIDSTATUS = '1' AND GU.ROLE =
+        GR.ROLE_CODE
+        <if test="queryCondition.roleCode != null and queryCondition.roleCode != ''">
+            AND GU.ROLE = #{queryCondition.roleCode}
+        </if>
+        <if test="queryCondition.userName != null and queryCondition.userName != ''">
+            AND GU.USERNAME LIKE CONCAT('%',#{queryCondition.userName},'%')
+        </if>
+    </select>
+    <select id="listUnRoledUser" resultType="map">
+		SELECT USERCODE,USERNAME FROM GGUSER GU WHERE GU.VALIDSTATUS = '1' AND (GU.ROLE IS NULL OR RTRIM(GU.ROLE) = '') AND GU.ROLE != 'admin'
+	</select>
+    <select id="queryPersonsAll" parameterType="Pagination" resultType="map">
+        SELECT
+        GU.USERCODE,GU.USERNAME,GU.COMLEVEL,GU.USERIND,GU.ADDRESS,
+        GU.PROVINCE,GU.CITY,GU.COUNTY,GU.TELEPHONE,GU.LINKNAME,GU.MOBILE,
+        GU.VALIDSTATUS,GU.DIVISION,GU.FLAG
+        FROM GGUSER GU
+        <where>1=1
+            <if test="queryCondition.userCode != null and queryCondition.userCode != ''">AND
+                GU.USERCODE=#{queryCondition.userCode}
+            </if>
+            <if test="queryCondition.userName != null and queryCondition.userName != ''">AND
+                GU.USERNAME=#{queryCondition.userName}
+            </if>
+            <if test="queryCondition.province != null and queryCondition.province != ''">AND
+                GU.PROVINCE=#{queryCondition.province}
+            </if>
+            <if test="queryCondition.city != null and queryCondition.city != ''">AND GU.CITY=#{queryCondition.city}</if>
+            <if test="queryCondition.county != null and queryCondition.county != ''">AND
+                GU.COUNTY=#{queryCondition.county}
+            </if>
+            <if test="queryCondition.comLevel != null and queryCondition.comLevel != ''">AND
+                GU.COMLEVEL=#{queryCondition.comLevel}
+            </if>
+        </where>
+    </select>
+    <select id="queryPersonsAllEnterprise" parameterType="Pagination" resultType="map">
+        SELECT * FROM GGUSERCORP GU
+        <where>
+            1=1
+            <if test="queryCondition.userCode != null and queryCondition.userCode != ''">AND
+                GU.USERCODE=#{queryCondition.userCode}
+            </if>
+            <!-- <if test="queryCondition.userName != null and queryCondition.userName != ''">AND GU.USERNAME=#{queryCondition.userName} </if> -->
+            <if test="queryCondition.province != null and queryCondition.province != ''">AND
+                GU.PROVINCE=#{queryCondition.province}
+            </if>
+            <if test="queryCondition.city != null and queryCondition.city != ''">AND GU.CITY=#{queryCondition.city}</if>
+            <if test="queryCondition.county != null and queryCondition.county != ''">AND
+                GU.COUNTY=#{queryCondition.county}
+            </if>
+            <!-- <if test="queryCondition.comLevel != null and queryCondition.comLevel != ''">AND GU.COMLEVEL=#{queryCondition.comLevel} </if> -->
+        </where>
+    </select>
+    <!-- 经纪公司用户查询用户列表初始化方法  HSLE -->
+    <select id="selectUserManage" parameterType="Pagination" resultType="map">
+        SELECT
+        GU.USERCODE , GU.USERNAME ,
+        (SELECT CODECNAME FROM GGCODE WHERE CODETYPE = 'Province' AND CODECODE = GU.PROVINCE)PROVINCE,
+        (SELECT CODECNAME FROM GGCODE WHERE CODETYPE = 'City' AND CODECODE = GU.CITY)CITY,
+        (SELECT CODECNAME FROM GGCODE WHERE CODETYPE = 'County' AND CODECODE = GU.COUNTY)COUNTY,
+        (SELECT ROLE_NAME FROM GGROLE WHERE ROLE_CODE = GU."ROLE")"ROLE"
+        FROM GGUSER GU
+        <where>
+            1=1
+            <if test="queryCondition.userCode != null and queryCondition.userCode != ''">
+                AND GU.USERCODE != #{queryCondition.userCode}
+            </if>
+            <if test="queryCondition.userName != null and queryCondition.userName != ''">
+                AND GU.USERNAME LIKE'%'||#{queryCondition.userName }||'%'
+            </if>
+            <if test="queryCondition.province != null and queryCondition.province != ''">
+                AND GU.PROVINCE=#{queryCondition.province}
+            </if>
+            <if test="queryCondition.city != null and queryCondition.city != ''">
+                AND GU.CITY=#{queryCondition.city}
+            </if>
+            <if test="queryCondition.county != null and queryCondition.county != ''">
+                AND GU.COUNTY=#{queryCondition.county}
+            </if>
+            <if test="queryCondition.role != null and queryCondition.role != ''">
+                AND GU.ROLE=#{queryCondition.role}
+            </if>
+            <if test="queryCondition.comLevel != null and queryCondition.comLevel != ''">
+                AND GU.COMLEVEL >= #{queryCondition.comLevel}
+            </if>
+            AND GU.USERIND = '99'
+            AND GU.VALIDSTATUS = '1'
+        </where>
+    </select>
+
+    <update id="updateUser" parameterType="GgUser">
+        UPDATE GGUSER SET
+        <if test="province != null and province != ''">
+            PROVINCE=#{province,jdbcType=VARCHAR},
+        </if>
+        <if test="city != null and city != ''">
+            CITY=#{city,jdbcType=VARCHAR},
+        </if>
+        <if test="county != null and county != ''">
+            COUNTY=#{county,jdbcType=VARCHAR},
+        </if>
+        <if test="userName != null and userName != ''">
+            USERNAME=#{userName,jdbcType=VARCHAR},
+        </if>
+        <if test="linkName != null and linkName != ''">
+            LINKNAME=#{linkName,jdbcType=VARCHAR},
+        </if>
+        <if test="address != null and address != ''">
+            ADDRESS=#{address,jdbcType=VARCHAR},
+        </if>
+        <if test="mobile != null and mobile != ''">
+            MOBILE=#{mobile,jdbcType=VARCHAR},
+        </if>
+        <if test="telePhone != null and telePhone != ''">
+            TELEPHONE=#{telePhone,jdbcType=VARCHAR},
+        </if>
+        <if test="updator != null and updator != ''">
+            UPDATOR=#{updator,jdbcType=VARCHAR},
+        </if>
+        <if test="updateDate != null ">
+            UPDATEDATE=#{updateDate,jdbcType=DATE},
+        </if>
+        <if test="remark != null and remark != ''">
+            REMARK=#{remark,jdbcType=VARCHAR},
+        </if>
+        <if test="flag != null and flag != ''">
+            FLAG=#{flag,jdbcType=VARCHAR},
+        </if>
+        <if test="division != null and division != ''">
+            DIVISION=#{division,jdbcType=VARCHAR},
+        </if>
+        <if test="comLevel != null and comLevel != ''">
+            COMLEVEL=#{comLevel,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null and password != ''">
+            PASSWORD=#{password,jdbcType=VARCHAR},
+        </if>
+        <if test="role != null and role != ''">
+            ROLE=#{role,jdbcType=VARCHAR},
+        </if>
+        <if test="validStatus != null and validStatus != ''">
+            VALIDSTATUS=#{validStatus,jdbcType=VARCHAR}
+        </if>
+        WHERE USERCODE=#{userCode,jdbcType=VARCHAR}
+    </update>
+    <!-- 经纪公司用户修改信息 -->
+    <update id="updateJingJiUser" parameterType="GgUser">
+        UPDATE GGUSER SET
+        <if test="province != null and province != ''">
+            PROVINCE=#{province,jdbcType=VARCHAR},
+        </if>
+        <if test="city != null and city != ''">
+            CITY=#{city,jdbcType=VARCHAR},
+        </if>
+        <if test="county != null and county != ''">
+            COUNTY=#{county,jdbcType=VARCHAR},
+        </if>
+        <if test="userName != null and userName != ''">
+            USERNAME=#{userName,jdbcType=VARCHAR},
+        </if>
+        <if test="userInd != null and userInd != ''">
+            USERIND=#{userInd,jdbcType=VARCHAR},
+        </if>
+        <if test="linkName != null and linkName != ''">
+            LINKNAME=#{linkName,jdbcType=VARCHAR},
+        </if>
+        <if test="address != null and address != ''">
+            ADDRESS=#{address,jdbcType=VARCHAR},
+        </if>
+        <if test="mobile != null and mobile != ''">
+            MOBILE=#{mobile,jdbcType=VARCHAR},
+        </if>
+        <if test="telePhone != null and telePhone != ''">
+            TELEPHONE=#{telePhone,jdbcType=VARCHAR},
+        </if>
+        <if test="updator != null and updator != ''">
+            UPDATOR=#{updator,jdbcType=VARCHAR},
+        </if>
+        <if test="updateDate != null ">
+            UPDATEDATE=#{updateDate,jdbcType=DATE},
+        </if>
+        <if test="remark != null and remark != ''">
+            REMARK=#{remark,jdbcType=VARCHAR},
+        </if>
+        <if test="flag != null and flag != ''">
+            FLAG=#{flag,jdbcType=VARCHAR},
+        </if>
+        <if test="division != null and division != ''">
+            DIVISION=#{division,jdbcType=VARCHAR},
+        </if>
+        <if test="comLevel != null and comLevel != ''">
+            COMLEVEL=#{comLevel,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null and password != ''">
+            PASSWORD=#{password,jdbcType=VARCHAR},
+        </if>
+        <if test="role != null and role != ''">
+            ROLE=#{role,jdbcType=VARCHAR},
+        </if>
+        <if test="validStatus != null and validStatus != ''">
+            VALIDSTATUS=#{validStatus,jdbcType=VARCHAR}
+        </if>
+        WHERE USERCODE=#{userCode,jdbcType=VARCHAR}
+    </update>
+
+    <!-- hslt -->
+    <!-- 获取所有可以发送消息的用户类型 -->
+    <select id="getNoticeUser" parameterType="Pagination" resultType="map">
+        SELECT * FROM GGUSER
+        <where>
+            1=1
+            <if test="queryCondition.userCode != null and queryCondition.userCode != ''">AND USERCODE !=
+                #{queryCondition.userCode}
+            </if>
+            <if test="queryCondition.comLevel != null and queryCondition.comLevel != ''">AND COMLEVEL >=
+                #{queryCondition.comLevel}
+            </if>
+        </where>
+    </select>
+    <select id="selectNotice4User" parameterType="GgUser" resultType="map">
+        SELECT * FROM GGUSER
+        <where>
+            1=1
+            <if test="userInd != null and userInd != ''">
+                AND USERIND = #{userInd}
+            </if>
+            <if test="userCode != null and userCode != ''">
+                AND USERCODE != #{userCode}
+            </if>
+            <if test="comLevel != null and comLevel != ''">
+                AND COMLEVEL >= #{comLevel}
+            </if>
+        </where>
+    </select>
+    <select id="selectUserName" parameterType="GgUser" resultType="GgUser">
+        SELECT USERCODE,USERNAME FROM GGUSER
+        <where>
+            1=1
+            <!-- <if test="userCode != null and userCode != ''">
+            AND USERCODE != #{userCode}
+            </if> -->
+        </where>
+    </select>
+    <insert id="insertGgUser" parameterType="GgUser">
+        INSERT INTO GGUSER
+        (
+        <if test="userName != null and userName != ''">USERNAME,</if>
+        <if test="password != null and password != ''">PASSWORD,</if>
+        <if test="comLevel != null and comLevel != ''">COMLEVEL,</if>
+        <if test="userInd != null and userInd != ''">USERIND,</if>
+        <if test="address != null and address != ''">ADDRESS,</if>
+        <if test="province != null and province != ''">PROVINCE,</if>
+        <if test="city != null and city != ''">CITY,</if>
+        <if test="county != null and county != ''">COUNTY,</if>
+        <if test="telePhone != null and telePhone != ''">TELEPHONE,</if>
+        <if test="linkName != null and linkName != ''">LINKNAME,</if>
+        <if test="mobile != null and mobile != ''">MOBILE,</if>
+        <if test="validStatus != null and validStatus != ''">VALIDSTATUS,</if>
+        <if test="updator != null and updator != ''">UPDATOR,</if>
+        <if test="updateDate != null ">UPDATEDATE,</if>
+        <if test="remark != null and remark != ''">REMARK,</if>
+        <if test="flag != null and flag != ''">FLAG,</if>
+        <if test="role != null and role != ''">ROLE,</if>
+        <if test="userCode != null and userCode != ''">USERCODE</if>
+        ) VALUES(
+        <if test="userName != null and userName != ''">#{userName},</if>
+        <if test="password != null and password != ''">#{password},</if>
+        <if test="comLevel != null and comLevel != ''">#{comLevel,jdbcType=VARCHAR},</if>
+        <if test="userInd != null and userInd != ''">#{userInd},</if>
+        <if test="address != null and address != ''">#{address,jdbcType=VARCHAR},</if>
+
+        <if test="province != null and province != ''">#{province,jdbcType=VARCHAR},</if>
+        <if test="city != null and city != ''">#{city,jdbcType=VARCHAR},</if>
+        <if test="county != null and county != ''">#{county,jdbcType=VARCHAR},</if>
+        <if test="telePhone != null and telePhone != ''">#{telePhone,jdbcType=VARCHAR},</if>
+        <if test="linkName != null and linkName != ''">#{linkName,jdbcType=VARCHAR},</if>
+        <if test="mobile != null and mobile != ''">#{mobile,jdbcType=VARCHAR},</if>
+        <if test="validStatus != null and validStatus != ''">#{validStatus,jdbcType=VARCHAR},</if>
+        <if test="updator != null and updator != ''">#{updator,jdbcType=VARCHAR},</if>
+        <if test="updateDate != null ">#{updateDate,jdbcType=VARCHAR},</if>
+        <if test="remark != null and remark != ''">#{remark,jdbcType=VARCHAR},</if>
+        <if test="flag != null and flag != ''">#{flag,jdbcType=VARCHAR},</if>
+        <if test="role != null and role != ''">#{role,jdbcType=VARCHAR},</if>
+        <if test="userCode != null and userCode != ''">#{userCode}</if>
+        )
+    </insert>
+    <insert id="insertGgUserManager" parameterType="GgUser">
+        INSERT INTO GGUSER
+        (
+        <if test="userName != null and userName != ''">USERNAME,</if>
+        <if test="password != null and password != ''">PASSWORD,</if>
+        <if test="comLevel != null and comLevel != ''">COMLEVEL,</if>
+        <if test="userInd != null and userInd != ''">USERIND,</if>
+        <if test="address != null and address != ''">ADDRESS,</if>
+        <if test="province != null and province != ''">PROVINCE,</if>
+        <if test="city != null and city != ''">CITY,</if>
+        <if test="county != null and county != ''">COUNTY,</if>
+        <if test="telePhone != null and telePhone != ''">TELEPHONE,</if>
+        <if test="linkName != null and linkName != ''">LINKNAME,</if>
+        <if test="mobile != null and mobile != ''">MOBILE,</if>
+        <if test="validStatus != null and validStatus != ''">VALIDSTATUS,</if>
+        <if test="updator != null and updator != ''">UPDATOR,</if>
+        <if test="updateDate != null ">UPDATEDATE,</if>
+        <if test="remark != null and remark != ''">REMARK,</if>
+        <if test="flag != null and flag != ''">FLAG,</if>
+        <if test="role != null and role != ''">ROLE,</if>
+        <if test="userCode != null and userCode != ''">USERCODE</if>
+        ) VALUES(
+        <if test="userName != null and userName != ''">#{userName},</if>
+        <if test="password != null and password != ''">#{password},</if>
+        <if test="comLevel != null and comLevel != ''">#{comLevel,jdbcType=VARCHAR},</if>
+        <if test="userInd != null and userInd != ''">#{userInd},</if>
+        <if test="address != null and address != ''">#{address,jdbcType=VARCHAR},</if>
+
+        <if test="province != null and province != ''">#{province,jdbcType=VARCHAR},</if>
+        <if test="city != null and city != ''">#{city,jdbcType=VARCHAR},</if>
+        <if test="county != null and county != ''">#{county,jdbcType=VARCHAR},</if>
+        <if test="telePhone != null and telePhone != ''">#{telePhone,jdbcType=VARCHAR},</if>
+        <if test="linkName != null and linkName != ''">#{linkName,jdbcType=VARCHAR},</if>
+        <if test="mobile != null and mobile != ''">#{mobile,jdbcType=VARCHAR},</if>
+        <if test="validStatus != null and validStatus != ''">#{validStatus,jdbcType=VARCHAR},</if>
+        <if test="updator != null and updator != ''">#{updator,jdbcType=VARCHAR},</if>
+        <if test="updateDate != null ">#{updateDate,jdbcType=VARCHAR},</if>
+        <if test="remark != null and remark != ''">#{remark,jdbcType=VARCHAR},</if>
+        <if test="flag != null and flag != ''">#{flag,jdbcType=VARCHAR},</if>
+        <if test="role != null and role != ''">#{role,jdbcType=VARCHAR},</if>
+        <if test="userCode != null and userCode != ''">#{userCode}</if>
+        )
+    </insert>
+    <delete id="delGgUserByCode" parameterType="string">
+        DELETE FROM GGUSER
+        <where>
+            USERCODE = #{userCode}
+        </where>
+    </delete>
+
+    <select id="getAllUser" parameterType="Pagination" resultType="map">
+        select
+        USERCODE,
+        USERNAME,
+        PASSWORD,
+        COMLEVEL,
+        (select role_name from ggrole where role_code = role) ROLE,
+        USERIND,
+        ADDRESS,
+        (select codecname from ggcode gc where codecode = province) as PROVINCE,
+        (select codecname from ggcode gc where codecode = CITY) as CITY,
+        (select codecname from ggcode gc where codecode = COUNTY) as COUNTY,
+        TELEPHONE,
+        LINKNAME,
+        MOBILE,
+        VALIDSTATUS,
+        UPDATOR,
+        UPDATEDATE,
+        REMARK,
+        FLAG,
+        DIVISION
+        from gguser
+        <where>
+             1 = 1
+            <if test="queryCondition.province != null and queryCondition.province != ''">
+                and province = #{queryCondition.province}
+            </if>
+            <if test="queryCondition.city != null and queryCondition.city != ''">
+                and city = #{queryCondition.city}
+            </if>
+            <if test="queryCondition.county != null and queryCondition.county != ''">
+                and county = #{queryCondition.county}
+            </if>
+            <if test="queryCondition.username != null and queryCondition.username != ''">
+                and username like concat("%",#{queryCondition.username},"%")
+            </if>
+            and remark = #{queryCondition.remark} and validstatus = 1
+        </where>
+    </select>
+
+    <select id="getUsersByRemark" parameterType="string" resultType="integer">
+        select count(*) from gguser where remark = #{userCode}
+    </select>
+    <select id="selectUsersByRemark" parameterType="string" resultType="com.dsib.entity.GgUser">
+        select
+          *
+        from gguser where remark = #{userCode}
+    </select>
+</mapper>

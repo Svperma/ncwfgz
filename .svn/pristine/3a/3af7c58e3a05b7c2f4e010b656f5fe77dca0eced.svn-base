@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgBuildingmstHisMapper">
+    <resultMap id="BaseResultMap" type="com.dsib.entity.GgBuildingmstHis">
+        <id column="BUSINESSNO" property="businessno" jdbcType="VARCHAR"/>
+        <result column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="HOUSEHOLDER" property="householder" jdbcType="VARCHAR"/>
+        <result column="IDENTITYID" property="identityid" jdbcType="VARCHAR"/>
+        <result column="PEOPLENUMBER" property="peoplenumber" jdbcType="INTEGER"/>
+        <result column="TYPE" property="type" jdbcType="VARCHAR"/>
+        <result column="GRADE" property="grade" jdbcType="VARCHAR"/>
+        <result column="STARTYEAR" property="startyear" jdbcType="VARCHAR"/>
+        <result column="SUNAMOUNT" property="sunamount" jdbcType="INTEGER"/>
+        <result column="BANK" property="bank" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT" property="account" jdbcType="VARCHAR"/>
+        <result column="PROVINCE" property="province" jdbcType="VARCHAR"/>
+        <result column="CITY" property="city" jdbcType="VARCHAR"/>
+        <result column="COUNTY" property="county" jdbcType="VARCHAR"/>
+        <result column="TOWN" property="town" jdbcType="VARCHAR"/>
+        <result column="VILLAGE" property="village" jdbcType="VARCHAR"/>
+        <result column="ADDRESS" property="address" jdbcType="VARCHAR"/>
+        <result column="FINISHSTATUS" property="finishstatus" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="INPUTCODE" property="inputcode" jdbcType="VARCHAR"/>
+        <result column="INPUTTIME" property="inputtime" jdbcType="TIMESTAMP"/>
+        <result column="DISCRIPTION" property="discription" jdbcType="VARCHAR"/>
+        <result column="FILEPATH" property="filePath" jdbcType="VARCHAR"/>
+        <result column="PROGRESS" property="progress" jdbcType="VARCHAR"/>
+        <result column="FINISHAMOUNT" property="finishamount" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    BUSINESSNO, ID, HOUSEHOLDER, IDENTITYID, PEOPLENUMBER, TYPE, GRADE, STARTYEAR, SUNAMOUNT, 
+    BANK, ACCOUNT, PROVINCE, CITY, COUNTY, TOWN, VILLAGE, ADDRESS, FINISHSTATUS, STATUS, 
+    INPUTCODE, INPUTTIME,DISCRIPTION,FILEPATH,PROGRESS,FINISHAMOUNT
+  </sql>
+  
+  <select id="listBuildingAudits" resultMap="BaseResultMap" parameterType="Pagination">
+        select
+        <include refid="Base_Column_List"/>
+        from ggbuildingmst_his
+        where status = '1'
+        <if test="queryCondition.town != null and queryCondition.town != ''">
+        	and town = #{queryCondition.town}
+        </if>
+        <if test="queryCondition.city != null and queryCondition.city != ''">
+        	and city = #{queryCondition.city}
+        </if>
+        <if test="queryCondition.county != null and queryCondition.county != ''">
+        	and county = #{queryCondition.county}
+        </if>
+        <if test="queryCondition.type != null and queryCondition.type != ''">
+        	and type = #{queryCondition.type}
+        </if>
+        <if test="queryCondition.grade != null and queryCondition.grade != ''">
+        	and grade = #{queryCondition.grade}
+        </if>
+        <if test="queryCondition.startYear != null and queryCondition.startYear != ''">
+        	and startYear = #{queryCondition.startYear}
+        </if>
+        <if test="queryCondition.finishStatus != null and queryCondition.finishStatus != ''">
+        	and finishStatus = #{queryCondition.finishStatus}
+        </if>
+        <if test="queryCondition.houseHolder != null and queryCondition.houseHolder != ''">
+        	and houseHolder like concat('%',#{queryCondition.houseHolder},'%')
+        </if>
+        <if test="queryCondition.identityNo != null and queryCondition.identityNo != ''">
+        	and identityId like concat('%',#{queryCondition.identityNo},'%')
+        </if>
+        <if test="queryCondition.bank != null and queryCondition.bank != ''">
+        	and bank = #{queryCondition.bank}
+        </if>
+        <if test="queryCondition.account != null and queryCondition.account != ''">
+        	and account like concat('%',#{queryCondition.account},'%')
+        </if>
+    </select>
+  
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from ggbuildingmst_his
+        where BUSINESSNO = #{businessno,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ggbuildingmst_his
+    where BUSINESSNO = #{businessno,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.dsib.entity.GgBuildingmstHis">
+    insert into ggbuildingmst_his (BUSINESSNO, ID, HOUSEHOLDER, 
+      IDENTITYID, PEOPLENUMBER, TYPE, 
+      GRADE, STARTYEAR, SUNAMOUNT, 
+      BANK, ACCOUNT, PROVINCE, 
+      CITY, COUNTY, TOWN, 
+      VILLAGE, ADDRESS, FINISHSTATUS, 
+      STATUS, INPUTCODE, INPUTTIME,
+      DISCRIPTION,FILEPATH,PROGRESS,FINISHAMOUNT
+      )
+    values (#{businessno,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, #{householder,jdbcType=VARCHAR}, 
+      #{identityid,jdbcType=VARCHAR}, #{peoplenumber,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
+      #{grade,jdbcType=VARCHAR}, #{startyear,jdbcType=VARCHAR}, #{sunamount,jdbcType=INTEGER}, 
+      #{bank,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{town,jdbcType=VARCHAR}, 
+      #{village,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{finishstatus,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{inputcode,jdbcType=VARCHAR}, #{inputtime,jdbcType=TIMESTAMP},
+      #{discription,jdbcType=VARCHAR},#{filePath, jdbcType=VARCHAR},#{progress, jdbcType=VARCHAR},
+      #{finishamount,jdbcType=INTEGER}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.dsib.entity.GgBuildingmstHis">
+        insert into ggbuildingmst_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="businessno != null">
+                BUSINESSNO,
+            </if>
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="householder != null">
+                HOUSEHOLDER,
+            </if>
+            <if test="identityid != null">
+                IDENTITYID,
+            </if>
+            <if test="peoplenumber != null">
+                PEOPLENUMBER,
+            </if>
+            <if test="type != null">
+                TYPE,
+            </if>
+            <if test="grade != null">
+                GRADE,
+            </if>
+            <if test="startyear != null">
+                STARTYEAR,
+            </if>
+            <if test="sunamount != null">
+                SUNAMOUNT,
+            </if>
+            <if test="bank != null">
+                BANK,
+            </if>
+            <if test="account != null">
+                ACCOUNT,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="city != null">
+                CITY,
+            </if>
+            <if test="county != null">
+                COUNTY,
+            </if>
+            <if test="town != null">
+                TOWN,
+            </if>
+            <if test="village != null">
+                VILLAGE,
+            </if>
+            <if test="address != null">
+                ADDRESS,
+            </if>
+            <if test="finishstatus != null">
+                FINISHSTATUS,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="inputcode != null">
+                INPUTCODE,
+            </if>
+            <if test="inputtime != null">
+                INPUTTIME,
+            </if>
+            <if test="discription != null">
+                DISCRIPTION,
+            </if>
+            <if test="filePath != null">
+                FILEPATH,
+            </if>
+            <if test="progress != null">
+                PROGRESS,
+            </if>
+            <if test="progress != null">
+                FINISHAMOUNT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="businessno != null">
+                #{businessno,jdbcType=VARCHAR},
+            </if>
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="householder != null">
+                #{householder,jdbcType=VARCHAR},
+            </if>
+            <if test="identityid != null">
+                #{identityid,jdbcType=VARCHAR},
+            </if>
+            <if test="peoplenumber != null">
+                #{peoplenumber,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="startyear != null">
+                #{startyear,jdbcType=VARCHAR},
+            </if>
+            <if test="sunamount != null">
+                #{sunamount,jdbcType=INTEGER},
+            </if>
+            <if test="bank != null">
+                #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="county != null">
+                #{county,jdbcType=VARCHAR},
+            </if>
+            <if test="town != null">
+                #{town,jdbcType=VARCHAR},
+            </if>
+            <if test="village != null">
+                #{village,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="finishstatus != null">
+                #{finishstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="inputcode != null">
+                #{inputcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputtime != null">
+                #{inputtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="discription != null">
+                #{discription,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null">
+                #{filePath,jdbcType=CARCHAR},
+            </if>
+            <if test="progress != null">
+                #{progress,jdbcType=CARCHAR},
+            </if>
+            <if test="finishamount != null">
+                #{finishamount,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgBuildingmstHis">
+        update ggbuildingmst_his
+        <set>
+            <if test="id != null">
+                ID = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="householder != null">
+                HOUSEHOLDER = #{householder,jdbcType=VARCHAR},
+            </if>
+            <if test="identityid != null">
+                IDENTITYID = #{identityid,jdbcType=VARCHAR},
+            </if>
+            <if test="peoplenumber != null">
+                PEOPLENUMBER = #{peoplenumber,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                TYPE = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                GRADE = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="startyear != null">
+                STARTYEAR = #{startyear,jdbcType=VARCHAR},
+            </if>
+            <if test="sunamount != null">
+                SUNAMOUNT = #{sunamount,jdbcType=INTEGER},
+            </if>
+            <if test="bank != null">
+                BANK = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                ACCOUNT = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                PROVINCE = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                CITY = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="county != null">
+                COUNTY = #{county,jdbcType=VARCHAR},
+            </if>
+            <if test="town != null">
+                TOWN = #{town,jdbcType=VARCHAR},
+            </if>
+            <if test="village != null">
+                VILLAGE = #{village,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                ADDRESS = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="finishstatus != null">
+                FINISHSTATUS = #{finishstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="inputcode != null">
+                INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputtime != null">
+                INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="discription != null">
+                DISCRIPTION = #{discription,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null">
+                FILEPATH = #{filePath,jdbcType=TIMESTAMP},
+            </if>
+            <if test="progress != null">
+                PROGRESS = #{progress,jdbcType=VARCHAR},
+            </if>
+            <if test="finishamount != null">
+                FINISHAMOUNT = #{finishamount,jdbcType=INTEGER},
+            </if>
+        </set>
+        where BUSINESSNO = #{businessno,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgBuildingmstHis">
+    update ggbuildingmst_his
+    set ID = #{id,jdbcType=VARCHAR},
+      HOUSEHOLDER = #{householder,jdbcType=VARCHAR},
+      IDENTITYID = #{identityid,jdbcType=VARCHAR},
+      PEOPLENUMBER = #{peoplenumber,jdbcType=INTEGER},
+      TYPE = #{type,jdbcType=VARCHAR},
+      GRADE = #{grade,jdbcType=VARCHAR},
+      STARTYEAR = #{startyear,jdbcType=VARCHAR},
+      SUNAMOUNT = #{sunamount,jdbcType=INTEGER},
+      BANK = #{bank,jdbcType=VARCHAR},
+      ACCOUNT = #{account,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      TOWN = #{town,jdbcType=VARCHAR},
+      VILLAGE = #{village,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      FINISHSTATUS = #{finishstatus,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+      INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+      DISCRIPTION = #{discription,jdbcType=VARCHAR},
+      FILEPATH = #{filePath,jdbcType=VARCHAR},
+      PROGRESS = #{progress,jdbcType=VARCHAR},
+      FINISHAMOUNT = #{finishamount,jdbcType=VARCHAR}
+    where BUSINESSNO = #{businessno,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectById" parameterType="string" resultType="com.dsib.entity.GgBuildingmstHis">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from ggbuildingmst_his
+        where id = #{id} and businessno = #{businessno}
+    </select>
+
+    <update id="updateGgBuildingMstStstus" parameterType="com.dsib.dto.UpdateBuildingMstOne">
+        update ggbuildingmst_his
+        set status = "3"
+        where id = #{id} and BUSINESSNO = #{businessno}
+    </update>
+    <update id="updateAllStstus" parameterType="com.dsib.dto.UpdateBuildingMstOne">
+        update ggbuildingmst_his
+        set status = #{status}
+        where id = #{id}
+    </update>
+
+    <select id="getGgBuildingmstHisByIdAndBusinessno" resultType="com.dsib.entity.GgBuildingmstHis">
+        select
+        <include refid="Base_Column_List"/>
+        from ggbuildingmst_his
+        where
+        id = #{id} and businessno = #{businessno}
+    </select>
+
+    <select id="getGgBuildingmstHisByBusinessno" resultType="com.dsib.dto.UpdateBuildingMst">
+        select
+            BUSINESSNO as businessno,
+            ID as id,
+            HOUSEHOLDER as householder,
+            IDENTITYID as identityid,
+            PEOPLENUMBER as peoplenumber,
+            TYPE as type,
+            GRADE as grade,
+            STARTYEAR as startyear,
+            SUNAMOUNT as sunamount,
+            BANK as bank,
+            ACCOUNT as account,
+            PROVINCE as province,
+            CITY as city,
+            COUNTY as county,
+            TOWN as town,
+            VILLAGE as village,
+            ADDRESS as address,
+            FINISHSTATUS as finishstatus,
+            STATUS as flag,
+            INPUTCODE as inputcode,
+            INPUTTIME as inputtime,
+            DISCRIPTION as discription,
+            FILEPATH as filepath,
+            PROGRESS as progress,
+            FINISHAMOUNT as finishamount
+        from ggbuildingmst_his
+        where
+        businessno = #{businessno}
+    </select>
+
+
+</mapper>

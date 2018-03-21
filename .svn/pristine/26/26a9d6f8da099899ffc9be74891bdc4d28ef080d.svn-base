@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GuPaymentHisMapper" >
+  <resultMap id="BaseResultMap" type="com.dsib.entity.GuPaymentHis" >
+    <id column="ORDERNO" property="orderno" jdbcType="VARCHAR" />
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="BANK" property="bank" jdbcType="VARCHAR" />
+    <result column="ACCOUNT" property="account" jdbcType="VARCHAR" />
+    <result column="PROGRESS" property="progress" jdbcType="VARCHAR" />
+    <result column="PAYMENTAMOUNT" property="paymentamount" jdbcType="INTEGER" />
+    <result column="OPERATETDATE" property="operatetdate" jdbcType="TIMESTAMP" />
+    <result column="PAYMENTDATE" property="paymentdate" jdbcType="TIMESTAMP" />
+    <result column="INPUTCODE" property="inputcode" jdbcType="VARCHAR" />
+    <result column="INPUTTIME" property="inputtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDERNO, ID, BANK, ACCOUNT, PROGRESS, PAYMENTAMOUNT, OPERATETDATE, PAYMENTDATE, INPUTCODE, 
+    INPUTTIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dsib.entity.GuPaymentHisKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from gupayment_his
+    where ORDERNO = #{orderno,jdbcType=VARCHAR}
+      and ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.dsib.entity.GuPaymentHisKey" >
+    delete from gupayment_his
+    where ORDERNO = #{orderno,jdbcType=VARCHAR}
+      and ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.dsib.entity.GuPaymentHis" >
+    insert into gupayment_his (ORDERNO, ID, BANK, 
+      ACCOUNT, PROGRESS, PAYMENTAMOUNT, 
+      OPERATETDATE, PAYMENTDATE, INPUTCODE, 
+      INPUTTIME)
+    values (#{orderno,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR}, 
+      #{account,jdbcType=VARCHAR}, #{progress,jdbcType=VARCHAR}, #{paymentamount,jdbcType=INTEGER}, 
+      #{operatetdate,jdbcType=TIMESTAMP}, #{paymentdate,jdbcType=TIMESTAMP}, #{inputcode,jdbcType=VARCHAR}, 
+      #{inputtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dsib.entity.GuPaymentHis" >
+    insert into gupayment_his
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderno != null" >
+        ORDERNO,
+      </if>
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="bank != null" >
+        BANK,
+      </if>
+      <if test="account != null" >
+        ACCOUNT,
+      </if>
+      <if test="progress != null" >
+        PROGRESS,
+      </if>
+      <if test="paymentamount != null" >
+        PAYMENTAMOUNT,
+      </if>
+      <if test="operatetdate != null" >
+        OPERATETDATE,
+      </if>
+      <if test="paymentdate != null" >
+        PAYMENTDATE,
+      </if>
+      <if test="inputcode != null" >
+        INPUTCODE,
+      </if>
+      <if test="inputtime != null" >
+        INPUTTIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderno != null" >
+        #{orderno,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="bank != null" >
+        #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="progress != null" >
+        #{progress,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentamount != null" >
+        #{paymentamount,jdbcType=INTEGER},
+      </if>
+      <if test="operatetdate != null" >
+        #{operatetdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentdate != null" >
+        #{paymentdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputcode != null" >
+        #{inputcode,jdbcType=VARCHAR},
+      </if>
+      <if test="inputtime != null" >
+        #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GuPaymentHis" >
+    update gupayment_his
+    <set >
+      <if test="bank != null" >
+        BANK = #{bank,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        ACCOUNT = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="progress != null" >
+        PROGRESS = #{progress,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentamount != null" >
+        PAYMENTAMOUNT = #{paymentamount,jdbcType=INTEGER},
+      </if>
+      <if test="operatetdate != null" >
+        OPERATETDATE = #{operatetdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentdate != null" >
+        PAYMENTDATE = #{paymentdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inputcode != null" >
+        INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+      </if>
+      <if test="inputtime != null" >
+        INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ORDERNO = #{orderno,jdbcType=VARCHAR}
+      and ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GuPaymentHis" >
+    update gupayment_his
+    set BANK = #{bank,jdbcType=VARCHAR},
+      ACCOUNT = #{account,jdbcType=VARCHAR},
+      PROGRESS = #{progress,jdbcType=VARCHAR},
+      PAYMENTAMOUNT = #{paymentamount,jdbcType=INTEGER},
+      OPERATETDATE = #{operatetdate,jdbcType=TIMESTAMP},
+      PAYMENTDATE = #{paymentdate,jdbcType=TIMESTAMP},
+      INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+      INPUTTIME = #{inputtime,jdbcType=TIMESTAMP}
+    where ORDERNO = #{orderno,jdbcType=VARCHAR}
+      and ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

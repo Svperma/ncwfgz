@@ -1,0 +1,50 @@
+var navs = [
+	{
+		"title": "首页",
+		"icon": "fa-stop-circle",
+		"href": "/init/buildings",
+		"spread": true
+	},
+	{
+		"title": "改造户信息查看",
+		"icon": "fa-stop-circle",
+		"href": "/jsp/message.jsp",
+		"spread": false
+	},
+	{
+		"title": "改造户信息管理",
+		"icon": "fa-stop-circle",
+		"href": "/jsp/manager.jsp",
+		"spread": false
+	},
+	{
+		"title": "兑付信息录入",
+		"icon": "fa-stop-circle",
+		"href": "/order/list",
+		"spread": false
+	},
+	{
+		"title": "兑付记录查看",
+		"icon": "fa-stop-circle",
+		"href": "/jsp/payment.jsp",
+		"spread": false
+	},
+	{
+		"title": "兑付信息查看",
+		"icon": "fa-stop-circle",
+		"href": "/jsp/cashMessage.jsp",
+		"spread": false
+	},
+	{
+		"title": "各地兑付情况",
+		"icon": "fa-stop-circle",
+		"href": "/jsp/statistics.jsp",
+		"spread": false
+	},
+	{
+		"title": "用户管理11111",
+		"icon": "fa-stop-circle",
+		"href": "nong8.html",
+		"spread": false
+	}
+ ];

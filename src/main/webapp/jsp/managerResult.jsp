@@ -1,0 +1,655 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="/tlds/ggCodeTld" prefix="code" %>
+<html>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<head>
+    <meta charset="utf-8">
+    <title>表单</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <script type="text/javascript" src="${basePath}/js/setReadOnly.js"></script>
+    <link rel="stylesheet" href="${basePath}/plugins/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="${basePath}/plugins/font-awesome/css/font-awesome.min.css">
+    <script src="${basePath}/js/jquery.js" type="text/javascript"></script>
+    <style>
+        #styletable {
+            table-layout: fixed;
+        }
+
+
+        #styletable td {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<body>
+<div id="show-div2" style="display:none;">
+    <form class="layui-form layui-form-pane" action="" method="post" id="fml" name="fml" enctype="multipart/form-data">
+        <input type="hidden" id="id" name="id">
+        <input type="hidden" id="village" name="village">
+        <input type="hidden" id="address" name="address">
+        <input type="hidden" id="finishstatus" name="finishstatus">
+        <%--<input type="hidden" id="city" name="city">--%>
+        <%--<input type="hidden" id="county" name="county">--%>
+        <input type="hidden" id="inputcode" name="inputcode">
+        <input type="hidden" id="inputtime" name="inputtime">
+        <input type="hidden" id="businessno" name="businessno">
+        <table class="layui-table">
+            <tr>
+                <th>户主姓名 * </th>
+                <td>
+                    <input type="text" name="householder" id="householder" lay-verify="required" placeholder="请输入户主姓名" autocomplete="off" class="layui-input" maxlength="15" readonly>
+                </td>
+                <th>身份证号 * </th>
+                <td><input type="text" name="identityid" id="identityid" lay-verify="required" placeholder="请输入身份证号" autocomplete="off" class="layui-input" maxlength="18" readonly></td>
+            </tr>
+            <tr>
+                <th>人口数 * </th>
+                <td><input type="text" name="peoplenumber" id="peoplenumber" lay-verify="required" placeholder="请输入人口数" autocomplete="off" class="layui-input" maxlength="2"></td>
+                <th>请选择开户行</th>
+                <td>
+                    <select name="bank" lay-filter="aihao" id="bank">
+                        <option value=""></option>
+                        <code:options codeType="bankType"/>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>账号</th>
+                <td><input type="text" name="account" id="account" lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input" maxlength="25" onclick="fuoux(this)"></td>
+                <th>请选择贫困类型 * </th>
+                <td>
+                    <select name="type" id="type" lay-filter="aihao">
+                        <option value=""></option>
+                        <code:options codeType="povertyType"/>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>请选择危房等级 * </th>
+                <td>
+                    <select name="grade" id="grade" lay-filter="grade" onchange="changeAmount()">
+                        <option value=""></option>
+                        <code:options codeType="grade"/>
+                    </select>
+                </td>
+                <th>施工进度 * </th>
+                <td>
+                    <select name="Progress" lay-verify="" id="progress">
+                        <option value=""></option>
+                        <code:options codeType="Progress"/>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>请选择纳入改造时间 * </th>
+                <td>
+                    <select name="startyear" id="startyear" lay-filter="aihao">
+                        <option value=""></option>
+                        <code:options codeType="startTime"/>
+                    </select>
+                </td>
+                <th>补助金额</th>
+                <td><input type="text" name="sunamount" id="sunamount" lay-verify="required" autocomplete="off" class="layui-input" maxlength="5" readonly></td>
+            </tr>
+            <tr>
+                <th>请选择城市</th>
+                <td>
+                    <%--<select name="city" lay-verify="" id="city">--%>
+                        <%--<option value=""></option>--%>
+                        <%--<code:options codeType="City"/>--%>
+                    <%--</select>--%>
+
+                    <select name="city" lay-filter="city" id="city">
+                        <c:if test="${sessionScope.ggUser.comLevel > '2' }">
+                            <c:forEach items="${sessionScope.cityList }" var="city">
+                                <option value="${city.codecode }" disabled>${city.codecname }</option>
+                            </c:forEach>
+                        </c:if>
+                    </select>
+                </td>
+                <th>请选择区县</th>
+                <td>
+                    <%--<select name="county" lay-verify="" id="county">--%>
+                        <%--<option value=""></option>--%>
+                        <%--<code:options codeType="County"/>--%>
+                    <%--</select>--%>
+                        <select name="county" id="county" lay-verify="" id="county">
+                            <c:if test="${sessionScope.ggUser.comLevel >= '3' }">
+                                <c:forEach items="${sessionScope.countyList }" var="county">
+                                    <option value="${county.codecode }" disabled>${county.codecname }</option>
+                                </c:forEach>
+                            </c:if>
+                        </select>
+                </td>
+
+            </tr>
+            <tr>
+                <th>已兑付金额</th>
+                <td><input type="text" name="finishamount" id="finishamount" lay-verify="required" autocomplete="off" class="layui-input" readonly></td>
+                <th>说明文件</th>
+                <td><input type="file" name="file" id="filePath" lay-verify="required" autocomplete="off" readonly>
+                    <a id="filePatha" href="" style="display: none">asdfasdf</a>
+                </td>
+                <input type="hidden" name="filePath" id="filePath1" lay-verify="required" autocomplete="off" value="">
+            </tr>
+            <tr>
+                <th>描述</th>
+                <td colspan="3"><textarea cols="5" role="50" name="discription" id="discription" lay-verify="required" autocomplete="off" class="layui-input"></textarea>
+                </td>
+            </tr>
+            <tr id="nextAudittr" style="display: none">
+                <th>审核人</th>
+                <td colspan="3"><input type="text" id="nextAudit"  lay-verify="required" autocomplete="off" style="border:0px"></td>
+            </tr>
+<%-- ----------------------------------------------------------------------------------------- --%>
+            <div class="layui-form">
+                <table class="layui-table" id="tabId" style="display: none;">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>审核人姓名</th>
+                        <th>审核时间</th>
+                        <th>审核状态</th>
+                        <th>审核意见</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tb">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><fmt:formatDate value="" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+<%-- ----------------------------------------------------------------------------------------- --%>
+
+
+        </table>
+    </form>
+</div>
+<div class="layui-layout-admin" style="height:100%;padding:5px;">
+    <form class="layui-form" action="${basePath}/init/bingspage" name="fm" id="fm">
+        <table class="layui-table" id="styletable">
+            <thead>
+            <tr>
+                <th>市</th>
+                <th>县</th>
+                <th>户主姓名</th>
+                <th>身份证号</th>
+                <th>开户行</th>
+                <th>卡号</th>
+                <th>贫困类型</th>
+                <th>危房等级</th>
+                <th>纳入改造时间</th>
+                <th>应兑付金额</th>
+                <th>已兑付金额</th>
+                <th>是否销户</th>
+                <th>详情</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${sessionScope.pagination.resultList}" var="build" varStatus="index">
+                <tr>
+                    <td><code:name codeCode="${build.city}" codeType="City"/></td>
+                    <td><code:name codeCode="${build.county}" codeType="County"/></td>
+                    <td title="${build.householder}">${build.householder}</td>
+                    <td title="${build.identityid}">${build.identityid}</td>
+                    <td><code:name codeCode="${build.bank}" codeType="bankType"/></td>
+
+                    <c:if test="${build.account == ''}">
+                        <td>无</td>
+                    </c:if>
+                    <c:if test="${build.account != ''}">
+                        <td>${build.account}</td>
+                    </c:if>
+
+                    <td><code:name codeCode="${build.type}" codeType="povertyType"/></td>
+                    <td><code:name codeCode="${build.grade}" codeType="grade"/></td>
+                    <td>${build.startyear}</td>
+                    <td>${build.sunamount}</td>
+                    <td>${build.finishamount}</td>
+                    <td><code:name codeCode="${build.finishstatus}" codeType="FinishStatus"/></td>
+                    <input type="hidden" id="id${index.index}" value="${build.id}"/>
+                    <input type="hidden" name="rflag" id="rflag" value="0"/>
+                    <input type="hidden" id="businessno${index.index}" value="${build.businessno}">
+                    <input type="hidden" id="status${index.index}" value="${build.status}">
+                    <td>
+                        <div class="site-demo-button" style="margin-bottom: 0;">
+                        <c:choose>
+                            <c:when test="${build.status == 1}">
+                                <a data-method="offset" class="layui-btn layui-btn-warm" data-param="${index.index}" data-type="t" id="${build.id}">审核中</a>
+                            </c:when>
+                            <c:when test="${build.status == 2}">
+                                <a data-method="offset" data-param="${index.index}" data-type="t" class="layui-btn layui-btn-danger">未通过</a>
+                            </c:when>
+                            <c:otherwise>
+                                <a data-method="offset" data-param="${index.index}" data-type="t" class="layui-btn layui-btn-normal">修改</a>
+                            </c:otherwise>
+                        </c:choose>
+                        </div>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+        <jsp:include page="${basePath }/common/pagination.jsp"></jsp:include>
+
+    </form>
+</div>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<script type="text/javascript" src="${basePath}/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="${basePath}/js/verification.js"></script>
+<script>
+    var form1;
+    layui.use(['form', 'layedit', 'laydate'], function() {
+        var form = layui.form(),
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+            form1 = form;
+
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+        //自定义验证规则
+        form.verify({
+            title: function(value) {
+                if(value.length < 5) {
+                    return '标题至少得5个字符啊';
+                }
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            content: function(value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function(data) {
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            })
+            return false;
+        });
+
+        //监听提交
+        form.on('select(grade)', function(data) {
+            document.getElementById("sunamount").value = data.value;
+        });
+    });
+</script>
+<script>
+    layui.use(['layer', 'laypage', 'element'], function(){
+        var layer = layui.layer
+            ,laypage = layui.laypage
+            ,element = layui.element();
+
+        //监听Tab切换
+        element.on('tab(demo)', function(data){
+            layer.msg('切换了：'+ this.innerHTML);
+            console.log(data);
+        });
+
+    });
+</script>
+<script>
+    layui.use('layer', function(){ //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        var flag = 0;
+
+        //触发事件
+        var active = {
+            setTop: function(){
+                var that = this;
+                //多窗口模式，层叠置顶
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,title: '当你选择该窗体时，即会在最顶端'
+                    ,area: ['390px', '260px']
+                    ,shade: 0
+                    ,maxmin: true
+                    ,offset: [ //为了演示，随机坐标
+                        Math.random()*($(window).height()-300)
+                        ,Math.random()*($(window).width()-390)
+                    ]
+                    ,content: 'http://layer.layui.com/test/settop.html'
+                    ,btn: ['继续弹出', '全部关闭'] //只是为了演示
+                    ,yes: function(){
+                        $(that).click();
+                    }
+                    ,btn2: function(){
+                        layer.closeAll();
+                    }
+
+                    ,zIndex: layer.zIndex //重点1
+                    ,success: function(layero){
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+            ,confirmTrans: function(){
+                //配置一个透明的询问框
+                layer.msg('大部分参数都是可以公用的<br>合理搭配，展示不一样的风格', {
+                    time: 20000, //20s后自动关闭
+                    btn: ['明白了', '知道了', '哦']
+                });
+            }
+            ,notice: function(){
+
+                //示范一个公告层
+                layer.open({
+                    type: 1
+                    ,title: false //不显示标题栏
+                    ,closeBtn: false
+                    ,area: '300px;'
+                    ,shade: 0.8
+                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    ,btn: ['火速围观', '残忍拒绝']
+                    ,moveType: 1 //拖拽模式，0或者1
+                    ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
+                    ,success: function(layero){
+                        var btn = layero.find('.layui-layer-btn');
+                        btn.css('text-align', 'center');
+                        btn.find('.layui-layer-btn0').attr({
+                            href: 'http://www.layui.com/'
+                            ,target: '_blank'
+                        });
+                    }
+                });
+            }
+            ,offset: function(othis){
+                var type = othis.data('type'),
+                    text = othis.text(),
+                    index = othis.data("param");
+//                var index = type.substring(type.length -1, type.length);
+                var inp = document.getElementById("id" + index);
+                var businessno = document.getElementById("businessno"+index);
+                var status = document.getElementById("status"+ index);
+                $.ajax({
+                    url:"<%= basePath%>init/building?id="+inp.value + "&businessno=" +businessno.value+ "&status="+status.value,
+                    type:"get",
+                    async:false,
+                    dataType:"json",
+                    success:function(data) {
+                        flag = data.flag
+//                        判断是否在审核中
+                        console.log(data.flag)
+                        if(data.flag != '3'){
+                            $("#tabId").css('display','');
+                            if(data.filePath != null){
+                                var patha = data.filePath;
+                                var $filepatha = $("#filePatha")
+                                    $filepatha.css('display','')
+                                    $filepatha.attr('href',patha);
+                                var pathName = patha.substring(patha.lastIndexOf("\\")+1, patha.length);
+                                    $filepatha.html(pathName);
+                                    $("#filepath1").val(patha)
+                            }else{
+                                $("#filePatha").css('display','none')
+                            }
+//                            显示下级审核人
+                            if(data.flag  != '2'){
+                                $("#nextAudittr").css('display','');
+                            }else {
+                                $("#nextAudittr").css('display','none');
+                            }
+                        }else{
+                            $("#tabId").css('display','none');
+                        }
+                        trueFlag(data);
+                        form1.render();
+                    }
+                })
+            if(flag != 1){
+                layer.open({
+                    type: 1
+                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    ,id: 'LAY_demo'+type //防止重复弹出
+                    ,btn: ['保存','注销','取消']
+                    ,title: '改造户详情'
+                    ,area: ['1200px', '500px']
+                    ,content: $('#show-div2')
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0 //不显示遮罩
+                    ,yes: function(){
+                        var identityid = document.getElementById("identityid").value;
+                        var householder = document.getElementById("householder").value;
+                        var peoplenumber = document.getElementById("peoplenumber").value;
+                        var discription = document.getElementById("discription").value;
+                        var file = document.getElementById("filePath").value;
+                        var file1 = document.getElementById("filePath1").value;
+
+
+                        if(discription == null || discription == ''){
+                            alert("请填写修改原因");
+                            document.getElementById("discription").style.border="1px solid red"
+                            return ;
+                        }
+                        if (!checkCardByIdno(identityid,"identityid")) {
+                            //alert("身份证号不正确，请重新填写!");
+                            return ;
+                        }
+                        if (householder == null || householder.trim() == '') {
+                            alert("用户姓名不能为空");
+                            document.getElementById("householder").style.border="1px solid red"
+                            return ;
+                        }
+                        document.getElementById("householder").style.border="1px solid #e2e2e2"
+                        var reg = /^[1-9]*$/; //验证规则
+                        if(!reg.test(peoplenumber)){
+                            alert("人口数必须是数字")
+                            document.getElementById("peoplenumber").style.border="1px solid red"
+                            return ;
+                        }
+                        document.getElementById("peoplenumber").style.border="1px solid #e2e2e2"
+
+
+                        var url = "${basePath}/init/updatemst";
+                        var fml = document.forms["fml"];
+                        fml.action = url
+                        fml.submit();
+                        layer.closeAll();
+
+                    }
+                    ,btn2:function(){
+                        document.getElementById("progress").value = "9";
+                        var url = "${basePath}/init/updatemst";
+                        var fml = document.forms["fml"];
+
+                        fml.action = url;
+                        fml.submit();
+                        alert("success")
+                        layer.closeAll();
+                    }
+                });
+            }else{
+                    layer.open({
+                        type: 1
+                        ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                        ,id: 'LAY_demo'+type //防止重复弹出
+                        ,btn: ['关闭']
+                        ,title: '改造户详情'
+                        ,area: ['1200px', '500px']
+                        ,content: $('#show-div2')
+                        ,btnAlign: 'c' //按钮居中
+                        ,shade: 0 //不显示遮罩
+                    });
+                }
+            }
+            ,offset1: function(othis){
+                var type = othis.data('type')
+                    ,text = othis.text();
+
+                layer.open({
+                    type: 1
+                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    ,id: 'LAY_demo'+type //防止重复弹出
+                    ,btn: '关闭全部'
+                    ,area: ['980px', '500px']
+                    ,content: $('#show-div3')
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0 //不显示遮罩
+                    ,yes: function(){
+                        layer.closeAll();
+                    }
+                });
+            }
+            ,offset2: function(othis){
+                var type = othis.data('type')
+                    ,text = othis.text();
+
+                layer.open({
+                    type: 1
+                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    ,btn: '关闭全部'
+                    ,area: ['300px', '300px']
+                    ,content: $('#show-div4')
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0 //不显示遮罩
+                    ,yes: function(){
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+
+        $('.site-demo-button .layui-btn').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+    });
+
+
+
+    function trueFlag(data){
+        setNotReadOnly("village",data.village);
+        setNotReadOnly("address",data.address);
+        setNotReadOnly("sunamount",data.sunamount);
+        setNotReadOnly("finishstatus",data.finishstatus);
+        setNotReadOnly("sunamount",data.sunamount);
+        setNotReadOnly("householder",data.householder);
+        setNotReadOnly("id",data.id);
+        setNotReadOnly("identityid",data.identityid);
+        setNotReadOnly("peoplenumber",data.peoplenumber);
+        setNotReadOnly("account",data.account);
+        setNotReadOnly("inputtime",new Date(data.inputtime).format("yyyy-MM-dd"));
+        setNotReadOnly("inputcode",data.inputcode);
+        setNotReadOnly("finishamount",data.finishamount);
+        setNotReadOnly("discription",data.discription);
+        setNotReadOnly("filePath1",data.filePath);
+        var filepatha = document.getElementById("filePatha");
+        console.log(filepatha)
+        setNotReadOnly("businessno",data.businessno);
+        setNotReadOnly("nextAudit",data.nextAudit);
+
+        setSeleteNotReOnly("city",data.city);
+        setSeleteNotReOnly("county",data.county);
+        setSeleteNotReOnly("bank",data.bank);
+        setSeleteNotReOnly("type",data.type);
+        setSeleteNotReOnly("grade",data.grade);
+        setSeleteNotReOnly("startyear",data.startyear);
+        setSeleteNotReOnly("progress",data.progress);
+
+        appentEle(data.audits);
+    }
+
+    function appentEle(arr){
+        $("#tb tr").remove();
+        for(var x = 0; x<arr.length; x++){
+            var str = "<tr><td>"+(x+1)+"</td>"
+            str += "<td>" +arr[x].auditCode+ "</td>"
+            str += "<td>"+ new Date(arr[x].auditTime).format("yyyy-MM-dd")+"</td>"
+            str += "<td>"+aaa(arr[x].auditStatus)+"</td>"
+            str += "<td>"+ arr[x].auditAdevice +"</td></tr>"
+
+            $("#tb").append(str);
+        }
+    }
+
+    function aaa(val) {
+        switch (val){
+            case "1": return "审核通过";
+            case "2": return "审核不通过";
+        }
+    }
+
+    Date.prototype.format =function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(), //day
+            "h+" : this.getHours(), //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4- RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
+
+   /* function falstGlag(data){
+        setReadOnly("village",data.village);
+        setReadOnly("address",data.address);
+        setReadOnly("sunamount",data.sunamount);
+        setReadOnly("finishstatus",data.finishstatus);
+        setReadOnly("sunamount",data.sunamount);
+        setReadOnly("householder",data.householder);
+        setReadOnly("id",data.id);
+        setReadOnly("identityid",data.identityid);
+        setReadOnly("peoplenumber",data.peoplenumber);
+        setReadOnly("account",data.account);
+        setReadOnly("inputtime",new Date(data.inputtime).format("yyyy-MM-dd"));
+        setReadOnly("inputcode",data.inputcode);
+        setReadOnly("finishamount",data.finishamount);
+
+        setSelectOnly("city",data.city);
+        setSelectOnly("county",data.county);
+        setSelectOnly("bank",data.bank);
+        setSelectOnly("type",data.type);
+        setSelectOnly("grade",data.grade);
+        setSelectOnly("startyear",data.startyear);
+        setSelectOnly("progress",data.progress);
+    }
+*/
+    function fuoux(ele) {
+        console.log(ele.value)
+        if(ele.value == '无'){
+            ele.value = '';
+        }
+    }
+
+</script>
+</body>
+
+</html>

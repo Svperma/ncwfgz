@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>监管</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body style="  min-height: 534px;">
+<div class="login_main_all">
+	<div class="login_main">
+		<div class="login_main_mid">
+    		<div class="login_main_mid_con">
+            	<ul>
+            		<li><input class="inputa" type="text" maxlength="20" value="请输入您的用户名" onfocus="if(value==defaultValue){value='';this.style.color='#000'}" onblur="if(!value){value=defaultValue;this.style.color='#999'}" style="color: rgb(153, 153, 153);"></li>
+                	<li><input class="inputb" type="text"  maxlength="20" value="请输入您的密码" onfocus="if(value==defaultValue){value='';this.style.color='#000'}" onblur="if(!value){value=defaultValue;this.style.color='#999'}" style="color: rgb(153, 153, 153);"></li>
+                	<li><input class="inputc" type="text"  maxlength="4" value="请输入验证码" onfocus="if(value==defaultValue){value='';this.style.color='#000'}" onblur="if(!value){value=defaultValue;this.style.color='#999'}" style="color: rgb(153, 153, 153);"><a class="yanzheng" href="#"><img src="images/yanzheng.jpg"></a></li>
+                    <li><a class="submit" href="main8.html">登录</a></li>
+                </ul>
+        	</div>
+    	</div>
+	</div>
+	<p>©copyright 2015 北京德圣保险经纪有限公司</p>
+</div>
+</body>
+</html>

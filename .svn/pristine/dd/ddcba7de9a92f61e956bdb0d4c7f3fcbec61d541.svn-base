@@ -1,0 +1,5 @@
+jdbc.user=root
+jdbc.pass=dsib
+driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://192.168.0.250:3306/ncwfgz
+validationQuery=select 1 from dual

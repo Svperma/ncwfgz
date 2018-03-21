@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgAuditConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.dsib.entity.GgAuditConfig" >
+    <id column="ROLE_CODE" property="roleCode" jdbcType="VARCHAR" />
+    <id column="AUDIT_TYPE" property="auditType" jdbcType="VARCHAR" />
+    <result column="AUDIT_CODE" property="auditCode" jdbcType="VARCHAR" />
+    <result column="OTHER_ROLE" property="otherRole" jdbcType="VARCHAR" />
+    <result column="VALID_STATUS" property="validStatus" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ROLE_CODE, AUDIT_TYPE, AUDIT_CODE, OTHER_ROLE, VALID_STATUS, FLAG, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dsib.entity.GgAuditConfigKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from ggauditconfig
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+      and AUDIT_TYPE = #{auditType,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="listByAuditType" resultMap="BaseResultMap" parameterType="string" >
+    select 
+    <include refid="Base_Column_List" />
+    from ggauditconfig
+    where  AUDIT_TYPE = #{auditType,jdbcType=VARCHAR} ORDER BY FLAG
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="com.dsib.entity.GgAuditConfigKey" >
+    delete from ggauditconfig
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+      and AUDIT_TYPE = #{auditType,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByAuditType" parameterType="java.lang.String" >
+    delete from ggauditconfig
+    where AUDIT_TYPE = #{_parameter,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertAll" parameterType="list" >
+    insert into ggauditconfig (ROLE_CODE, AUDIT_CODE, OTHER_ROLE, 
+      AUDIT_TYPE, VALID_STATUS, FLAG, 
+      REMARK)
+    values 
+    <foreach collection="list" item="obj" separator=",">
+    (#{obj.roleCode,jdbcType=VARCHAR}, #{obj.auditCode,jdbcType=VARCHAR}, #{obj.otherRole,jdbcType=VARCHAR}, 
+      #{obj.auditType,jdbcType=VARCHAR}, #{obj.validStatus,jdbcType=VARCHAR}, #{obj.flag,jdbcType=VARCHAR}, 
+      #{obj.remark,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+  <insert id="insert" parameterType="com.dsib.entity.GgAuditConfig" >
+    insert into ggauditconfig (ROLE_CODE, AUDIT_TYPE, AUDIT_CODE, 
+      OTHER_ROLE, VALID_STATUS, FLAG, 
+      REMARK)
+    values (#{roleCode,jdbcType=VARCHAR}, #{auditType,jdbcType=VARCHAR}, #{auditCode,jdbcType=VARCHAR}, 
+      #{otherRole,jdbcType=VARCHAR}, #{validStatus,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dsib.entity.GgAuditConfig" >
+    insert into ggauditconfig
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleCode != null" >
+        ROLE_CODE,
+      </if>
+      <if test="auditType != null" >
+        AUDIT_TYPE,
+      </if>
+      <if test="auditCode != null" >
+        AUDIT_CODE,
+      </if>
+      <if test="otherRole != null" >
+        OTHER_ROLE,
+      </if>
+      <if test="validStatus != null" >
+        VALID_STATUS,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleCode != null" >
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditType != null" >
+        #{auditType,jdbcType=VARCHAR},
+      </if>
+      <if test="auditCode != null" >
+        #{auditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="otherRole != null" >
+        #{otherRole,jdbcType=VARCHAR},
+      </if>
+      <if test="validStatus != null" >
+        #{validStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgAuditConfig" >
+    update ggauditconfig
+    <set >
+      <if test="auditCode != null" >
+        AUDIT_CODE = #{auditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="otherRole != null" >
+        OTHER_ROLE = #{otherRole,jdbcType=VARCHAR},
+      </if>
+      <if test="validStatus != null" >
+        VALID_STATUS = #{validStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+      and AUDIT_TYPE = #{auditType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgAuditConfig" >
+    update ggauditconfig
+    set AUDIT_CODE = #{auditCode,jdbcType=VARCHAR},
+      OTHER_ROLE = #{otherRole,jdbcType=VARCHAR},
+      VALID_STATUS = #{validStatus,jdbcType=VARCHAR},
+      FLAG = #{flag,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+      and AUDIT_TYPE = #{auditType,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgAuditMapper" >
+  <resultMap id="BaseResultMap" type="com.dsib.entity.GgAudit" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <id column="SERIES_NO" property="seriesNo" jdbcType="INTEGER" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="AUDIT_CODE" property="auditCode" jdbcType="VARCHAR" />
+    <result column="AUDIT_TIME" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="AUDIT_ADEVICE" property="auditAdevice" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SERIES_NO, TYPE, AUDIT_STATUS, AUDIT_CODE, AUDIT_TIME, AUDIT_ADEVICE, FLAG, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dsib.entity.GgAuditKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from ggaudit
+    where ID = #{id,jdbcType=VARCHAR}
+      and SERIES_NO = #{seriesNo,jdbcType=INTEGER}
+  </select>
+  <select id="listAudits" resultMap="BaseResultMap" parameterType="string" >
+    select 
+    ID, SERIES_NO, TYPE, AUDIT_STATUS, (select username from gguser where usercode = AUDIT_CODE) AUDIT_CODE, AUDIT_TIME, AUDIT_ADEVICE, FLAG, REMARK
+    from ggaudit
+    where ID = #{id,jdbcType=VARCHAR} order by SERIES_NO
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.dsib.entity.GgAuditKey" >
+    delete from ggaudit
+    where ID = #{id,jdbcType=VARCHAR}
+      and SERIES_NO = #{seriesNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dsib.entity.GgAudit" >
+    insert into ggaudit (ID, SERIES_NO, TYPE, 
+      AUDIT_STATUS, AUDIT_CODE, AUDIT_TIME, 
+      AUDIT_ADEVICE, FLAG, REMARK
+      )
+    values (#{id,jdbcType=VARCHAR}, #{seriesNo,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
+      #{auditStatus,jdbcType=VARCHAR}, #{auditCode,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
+      #{auditAdevice,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dsib.entity.GgAudit" >
+    insert into ggaudit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="seriesNo != null" >
+        SERIES_NO,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS,
+      </if>
+      <if test="auditCode != null" >
+        AUDIT_CODE,
+      </if>
+      <if test="auditTime != null" >
+        AUDIT_TIME,
+      </if>
+      <if test="auditAdevice != null" >
+        AUDIT_ADEVICE,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="seriesNo != null" >
+        #{seriesNo,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="auditCode != null" >
+        #{auditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditAdevice != null" >
+        #{auditAdevice,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgAudit" >
+    update ggaudit
+    <set >
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="auditCode != null" >
+        AUDIT_CODE = #{auditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        AUDIT_TIME = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditAdevice != null" >
+        AUDIT_ADEVICE = #{auditAdevice,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+      and SERIES_NO = #{seriesNo,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgAudit" >
+    update ggaudit
+    set TYPE = #{type,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      AUDIT_CODE = #{auditCode,jdbcType=VARCHAR},
+      AUDIT_TIME = #{auditTime,jdbcType=TIMESTAMP},
+      AUDIT_ADEVICE = #{auditAdevice,jdbcType=VARCHAR},
+      FLAG = #{flag,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+      and SERIES_NO = #{seriesNo,jdbcType=INTEGER}
+  </update>
+</mapper>

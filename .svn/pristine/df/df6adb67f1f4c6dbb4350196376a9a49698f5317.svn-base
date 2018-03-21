@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.dsib.entity.GgCode" >
+    <id column="CODETYPE" property="codetype" jdbcType="VARCHAR" />
+    <id column="CODECODE" property="codecode" jdbcType="VARCHAR" />
+    <result column="CODECNAME" property="codecname" jdbcType="VARCHAR" />
+    <result column="CODETNAME" property="codetname" jdbcType="VARCHAR" />
+    <result column="CODEENAME" property="codeename" jdbcType="VARCHAR" />
+    <result column="CREATORCODE" property="creatorcode" jdbcType="VARCHAR" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATERCODE" property="updatercode" jdbcType="VARCHAR" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="VALIDDATE" property="validdate" jdbcType="TIMESTAMP" />
+    <result column="INVALIDDATE" property="invaliddate" jdbcType="TIMESTAMP" />
+    <result column="VALIDIND" property="validind" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="DISPLAYNO" property="displayno" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CODETYPE, CODECODE, CODECNAME, CODETNAME, CODEENAME, CREATORCODE, CREATETIME, UPDATERCODE, 
+    UPDATETIME, VALIDDATE, INVALIDDATE, VALIDIND, REMARK, FLAG, DISPLAYNO
+  </sql>
+  <select id="getGgCodeByObj" parameterType="com.dsib.entity.GgCode" resultType="com.dsib.entity.GgCode">
+		SELECT * FROM GGCODE <where> 1=1
+			<if test="codetype != null and codetype != ''">
+				AND CODETYPE=#{codetype}
+			</if>
+			<if test="codecode != null and codecode != ''">
+				AND CODECODE = #{codecode}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND REMARK = #{remark}
+			</if>
+			ORDER BY CODECODE desc
+		</where>
+	</select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dsib.entity.GgCodeKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from ggcode
+    where CODETYPE = #{codetype,jdbcType=VARCHAR}
+      and CODECODE = #{codecode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.dsib.entity.GgCodeKey" >
+    delete from ggcode
+    where CODETYPE = #{codetype,jdbcType=VARCHAR}
+      and CODECODE = #{codecode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.dsib.entity.GgCode" >
+    insert into ggcode (CODETYPE, CODECODE, CODECNAME, 
+      CODETNAME, CODEENAME, CREATORCODE, 
+      CREATETIME, UPDATERCODE, UPDATETIME, 
+      VALIDDATE, INVALIDDATE, VALIDIND, 
+      REMARK, FLAG, DISPLAYNO
+      )
+    values (#{codetype,jdbcType=VARCHAR}, #{codecode,jdbcType=VARCHAR}, #{codecname,jdbcType=VARCHAR}, 
+      #{codetname,jdbcType=VARCHAR}, #{codeename,jdbcType=VARCHAR}, #{creatorcode,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatercode,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{validdate,jdbcType=TIMESTAMP}, #{invaliddate,jdbcType=TIMESTAMP}, #{validind,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{displayno,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dsib.entity.GgCode" >
+    insert into ggcode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="codetype != null" >
+        CODETYPE,
+      </if>
+      <if test="codecode != null" >
+        CODECODE,
+      </if>
+      <if test="codecname != null" >
+        CODECNAME,
+      </if>
+      <if test="codetname != null" >
+        CODETNAME,
+      </if>
+      <if test="codeename != null" >
+        CODEENAME,
+      </if>
+      <if test="creatorcode != null" >
+        CREATORCODE,
+      </if>
+      <if test="createtime != null" >
+        CREATETIME,
+      </if>
+      <if test="updatercode != null" >
+        UPDATERCODE,
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME,
+      </if>
+      <if test="validdate != null" >
+        VALIDDATE,
+      </if>
+      <if test="invaliddate != null" >
+        INVALIDDATE,
+      </if>
+      <if test="validind != null" >
+        VALIDIND,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+      <if test="displayno != null" >
+        DISPLAYNO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="codetype != null" >
+        #{codetype,jdbcType=VARCHAR},
+      </if>
+      <if test="codecode != null" >
+        #{codecode,jdbcType=VARCHAR},
+      </if>
+      <if test="codecname != null" >
+        #{codecname,jdbcType=VARCHAR},
+      </if>
+      <if test="codetname != null" >
+        #{codetname,jdbcType=VARCHAR},
+      </if>
+      <if test="codeename != null" >
+        #{codeename,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorcode != null" >
+        #{creatorcode,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatercode != null" >
+        #{updatercode,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validdate != null" >
+        #{validdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invaliddate != null" >
+        #{invaliddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validind != null" >
+        #{validind,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="displayno != null" >
+        #{displayno,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgCode" >
+    update ggcode
+    <set >
+      <if test="codecname != null" >
+        CODECNAME = #{codecname,jdbcType=VARCHAR},
+      </if>
+      <if test="codetname != null" >
+        CODETNAME = #{codetname,jdbcType=VARCHAR},
+      </if>
+      <if test="codeename != null" >
+        CODEENAME = #{codeename,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorcode != null" >
+        CREATORCODE = #{creatorcode,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatercode != null" >
+        UPDATERCODE = #{updatercode,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validdate != null" >
+        VALIDDATE = #{validdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invaliddate != null" >
+        INVALIDDATE = #{invaliddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validind != null" >
+        VALIDIND = #{validind,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="displayno != null" >
+        DISPLAYNO = #{displayno,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where CODETYPE = #{codetype,jdbcType=VARCHAR}
+      and CODECODE = #{codecode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgCode" >
+    update ggcode
+    set CODECNAME = #{codecname,jdbcType=VARCHAR},
+      CODETNAME = #{codetname,jdbcType=VARCHAR},
+      CODEENAME = #{codeename,jdbcType=VARCHAR},
+      CREATORCODE = #{creatorcode,jdbcType=VARCHAR},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      UPDATERCODE = #{updatercode,jdbcType=VARCHAR},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      VALIDDATE = #{validdate,jdbcType=TIMESTAMP},
+      INVALIDDATE = #{invaliddate,jdbcType=TIMESTAMP},
+      VALIDIND = #{validind,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      FLAG = #{flag,jdbcType=VARCHAR},
+      DISPLAYNO = #{displayno,jdbcType=DECIMAL}
+    where CODETYPE = #{codetype,jdbcType=VARCHAR}
+      and CODECODE = #{codecode,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getGgCode" parameterType="string" resultType="com.dsib.entity.GgCode">
+    select
+    <include refid="Base_Column_List"/>
+    from ggcode
+    <where>
+      <if test="_parameter != null || _parameter != ''">
+        codetype = #{_parameter}
+      </if>
+    </where>
+  </select>
+
+  <select id="getProvince" resultType="com.dsib.entity.GgCode">
+    select
+    <include refid="Base_Column_List"/>
+    from ggcode
+    <where>
+      <if test="codeType != null || codeType != ''">
+        and codetype = #{codeType}
+      </if>
+      <if test="provinceCode != null || provinceCode != ''">
+        and codecode = #{provinceCode}
+      </if>
+    </where>
+    order by codecode asc
+  </select>
+
+  <select id="getCity" resultType="com.dsib.entity.GgCode">
+    select
+    <include refid="Base_Column_List"/>
+    from ggcode
+    <where>
+      <if test="codeType != null || codeType != ''">
+        and codetype = #{codeType}
+      </if>
+      <if test="provinceCode != null || provinceCode != ''">
+        and remark = #{provinceCode}
+      </if>
+    </where>
+    order by codecode asc
+  </select>
+</mapper>

@@ -1,0 +1,130 @@
+package com.dsib.dto;
+
+
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class PaymentResult implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String orderNo;
+
+    private String id;
+
+    private String identityId;
+
+    private String householder;
+
+    private String progress;
+
+    private Date paymentDate;
+
+    private String paymentAmount;
+
+    public PaymentResult() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PaymentResult that = (PaymentResult) o;
+
+        if (orderNo != null ? !orderNo.equals(that.orderNo) : that.orderNo != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (identityId != null ? !identityId.equals(that.identityId) : that.identityId != null) return false;
+        if (householder != null ? !householder.equals(that.householder) : that.householder != null) return false;
+        if (progress != null ? !progress.equals(that.progress) : that.progress != null) return false;
+        if (paymentDate != null ? !paymentDate.equals(that.paymentDate) : that.paymentDate != null) return false;
+        return paymentAmount != null ? paymentAmount.equals(that.paymentAmount) : that.paymentAmount == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = orderNo != null ? orderNo.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (identityId != null ? identityId.hashCode() : 0);
+        result = 31 * result + (householder != null ? householder.hashCode() : 0);
+        result = 31 * result + (progress != null ? progress.hashCode() : 0);
+        result = 31 * result + (paymentDate != null ? paymentDate.hashCode() : 0);
+        result = 31 * result + (paymentAmount != null ? paymentAmount.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String
+    toString() {
+        return "PaymentResult{" +
+                "orderNo='" + orderNo + '\'' +
+                ", id='" + id + '\'' +
+                ", identityId='" + identityId + '\'' +
+                ", householder='" + householder + '\'' +
+                ", progress='" + progress + '\'' +
+                ", paymentDate=" + paymentDate +
+                ", paymentAmount='" + paymentAmount + '\'' +
+                '}';
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOrderNo() {
+
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getIdentityId() {
+        return identityId;
+    }
+
+    public void setIdentityId(String identityId) {
+        this.identityId = identityId;
+    }
+
+    public String getHouseholder() {
+        return householder;
+    }
+
+    public void setHouseholder(String householder) {
+        this.householder = householder;
+    }
+
+    public String getProgress() {
+        return progress;
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
+    }
+
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public String getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(String paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+}

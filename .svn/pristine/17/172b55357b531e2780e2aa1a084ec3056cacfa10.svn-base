@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgBuildingmstMapper">
+    <resultMap id="BaseResultMap" type="com.dsib.entity.GgBuildingmst">
+        <id column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="HOUSEHOLDER" property="householder" jdbcType="VARCHAR"/>
+        <result column="IDENTITYID" property="identityid" jdbcType="VARCHAR"/>
+        <result column="PEOPLENUMBER" property="peoplenumber" jdbcType="INTEGER"/>
+        <result column="TYPE" property="type" jdbcType="VARCHAR"/>
+        <result column="GRADE" property="grade" jdbcType="VARCHAR"/>
+        <result column="STARTYEAR" property="startyear" jdbcType="VARCHAR"/>
+        <result column="SUNAMOUNT" property="sunamount" jdbcType="INTEGER"/>
+        <result column="BANK" property="bank" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT" property="account" jdbcType="VARCHAR"/>
+        <result column="PROVINCE" property="province" jdbcType="VARCHAR"/>
+        <result column="CITY" property="city" jdbcType="VARCHAR"/>
+        <result column="COUNTY" property="county" jdbcType="VARCHAR"/>
+        <result column="TOWN" property="town" jdbcType="VARCHAR"/>
+        <result column="VILLAGE" property="village" jdbcType="VARCHAR"/>
+        <result column="ADDRESS" property="address" jdbcType="VARCHAR"/>
+        <result column="PROGRESS" property="progress" jdbcType="VARCHAR"/>
+        <result column="FINISHAMOUNT" property="finishamount" jdbcType="INTEGER"/>
+        <result column="FINISHSTATUS" property="finishstatus" jdbcType="VARCHAR"/>
+        <result column="INPUTCODE" property="inputcode" jdbcType="VARCHAR"/>
+        <result column="INPUTTIME" property="inputtime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATECODE" property="updatecode" jdbcType="VARCHAR"/>
+        <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="CONFIRMCODE" property="confirmcode" jdbcType="VARCHAR"/>
+        <result column="CONFIRMTIME" property="confirmtime" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, HOUSEHOLDER, IDENTITYID, PEOPLENUMBER, TYPE, GRADE, STARTYEAR, SUNAMOUNT, BANK,
+    ACCOUNT, PROVINCE, CITY, COUNTY, TOWN, VILLAGE, ADDRESS, PROGRESS, FINISHAMOUNT, 
+    FINISHSTATUS, INPUTCODE, INPUTTIME, UPDATECODE, UPDATETIME, CONFIRMCODE, CONFIRMTIME, STATUS
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from ggbuildingmst
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ggbuildingmst
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.dsib.entity.GgBuildingmst">
+    insert into ggbuildingmst (ID, HOUSEHOLDER, IDENTITYID,
+      PEOPLENUMBER, TYPE, GRADE, 
+      STARTYEAR, SUNAMOUNT, BANK, 
+      ACCOUNT, PROVINCE, CITY, 
+      COUNTY, TOWN, VILLAGE, 
+      ADDRESS, PROGRESS, FINISHAMOUNT, 
+      FINISHSTATUS, INPUTCODE, INPUTTIME, 
+      UPDATECODE, UPDATETIME, CONFIRMCODE, 
+      CONFIRMTIME,STATUS)
+    values (#{id,jdbcType=VARCHAR}, #{householder,jdbcType=VARCHAR}, #{identityid,jdbcType=VARCHAR},
+      #{peoplenumber,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, 
+      #{startyear,jdbcType=VARCHAR}, #{sunamount,jdbcType=INTEGER}, #{bank,jdbcType=VARCHAR}, 
+      #{account,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{county,jdbcType=VARCHAR}, #{town,jdbcType=VARCHAR}, #{village,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{progress,jdbcType=VARCHAR}, #{finishamount,jdbcType=INTEGER}, 
+      #{finishstatus,jdbcType=VARCHAR}, #{inputcode,jdbcType=VARCHAR}, #{inputtime,jdbcType=TIMESTAMP}, 
+      #{updatecode,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP}, #{confirmcode,jdbcType=VARCHAR}, 
+      #{confirmtime,jdbcType=TIMESTAMP},#{status, jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.dsib.entity.GgBuildingmst">
+        insert into ggbuildingmst
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="householder != null">
+                HOUSEHOLDER,
+            </if>
+            <if test="identityid != null">
+                IDENTITYID,
+            </if>
+            <if test="peoplenumber != null">
+                PEOPLENUMBER,
+            </if>
+            <if test="type != null">
+                TYPE,
+            </if>
+            <if test="grade != null">
+                GRADE,
+            </if>
+            <if test="startyear != null">
+                STARTYEAR,
+            </if>
+            <if test="sunamount != null">
+                SUNAMOUNT,
+            </if>
+            <if test="bank != null">
+                BANK,
+            </if>
+            <if test="account != null">
+                ACCOUNT,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="city != null">
+                CITY,
+            </if>
+            <if test="county != null">
+                COUNTY,
+            </if>
+            <if test="town != null">
+                TOWN,
+            </if>
+            <if test="village != null">
+                VILLAGE,
+            </if>
+            <if test="address != null">
+                ADDRESS,
+            </if>
+            <if test="progress != null">
+                PROGRESS,
+            </if>
+            <if test="finishamount != null">
+                FINISHAMOUNT,
+            </if>
+            <if test="finishstatus != null">
+                FINISHSTATUS,
+            </if>
+            <if test="inputcode != null">
+                INPUTCODE,
+            </if>
+            <if test="inputtime != null">
+                INPUTTIME,
+            </if>
+            <if test="updatecode != null">
+                UPDATECODE,
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME,
+            </if>
+            <if test="confirmcode != null">
+                CONFIRMCODE,
+            </if>
+            <if test="confirmtime != null">
+                CONFIRMTIME,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="householder != null">
+                #{householder,jdbcType=VARCHAR},
+            </if>
+            <if test="identityid != null">
+                #{identityid,jdbcType=VARCHAR},
+            </if>
+            <if test="peoplenumber != null">
+                #{peoplenumber,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="startyear != null">
+                #{startyear,jdbcType=VARCHAR},
+            </if>
+            <if test="sunamount != null">
+                #{sunamount,jdbcType=INTEGER},
+            </if>
+            <if test="bank != null">
+                #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="county != null">
+                #{county,jdbcType=VARCHAR},
+            </if>
+            <if test="town != null">
+                #{town,jdbcType=VARCHAR},
+            </if>
+            <if test="village != null">
+                #{village,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="progress != null">
+                #{progress,jdbcType=VARCHAR},
+            </if>
+            <if test="finishamount != null">
+                #{finishamount,jdbcType=INTEGER},
+            </if>
+            <if test="finishstatus != null">
+                #{finishstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="inputcode != null">
+                #{inputcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputtime != null">
+                #{inputtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatecode != null">
+                #{updatecode,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmcode != null">
+                #{confirmcode,jdbcType=VARCHAR},
+            </if>
+            <if test="confirmtime != null">
+                #{confirmtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgBuildingmst">
+        update ggbuildingmst
+        <set>
+            <if test="householder != null">
+                HOUSEHOLDER = #{householder,jdbcType=VARCHAR},
+            </if>
+            <if test="identityid != null">
+                IDENTITYID = #{identityid,jdbcType=VARCHAR},
+            </if>
+            <if test="peoplenumber != null">
+                PEOPLENUMBER = #{peoplenumber,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                TYPE = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                GRADE = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="startyear != null">
+                STARTYEAR = #{startyear,jdbcType=VARCHAR},
+            </if>
+            <if test="sunamount != null">
+                SUNAMOUNT = #{sunamount,jdbcType=INTEGER},
+            </if>
+            <if test="bank != null">
+                BANK = #{bank,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                ACCOUNT = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                PROVINCE = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                CITY = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="county != null">
+                COUNTY = #{county,jdbcType=VARCHAR},
+            </if>
+            <if test="town != null">
+                TOWN = #{town,jdbcType=VARCHAR},
+            </if>
+            <if test="village != null">
+                VILLAGE = #{village,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                ADDRESS = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="progress != null">
+                PROGRESS = #{progress,jdbcType=VARCHAR},
+            </if>
+            <if test="finishamount != null">
+                FINISHAMOUNT = #{finishamount,jdbcType=INTEGER},
+            </if>
+            <if test="finishstatus != null">
+                FINISHSTATUS = #{finishstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="inputcode != null">
+                INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputtime != null">
+                INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatecode != null">
+                UPDATECODE = #{updatecode,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmcode != null">
+                CONFIRMCODE = #{confirmcode,jdbcType=VARCHAR},
+            </if>
+            <if test="confirmtime != null">
+                CONFIRMTIME = #{confirmtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgBuildingmst">
+    update ggbuildingmst
+    set HOUSEHOLDER = #{householder,jdbcType=VARCHAR},
+      IDENTITYID = #{identityid,jdbcType=VARCHAR},
+      PEOPLENUMBER = #{peoplenumber,jdbcType=INTEGER},
+      TYPE = #{type,jdbcType=VARCHAR},
+      GRADE = #{grade,jdbcType=VARCHAR},
+      STARTYEAR = #{startyear,jdbcType=VARCHAR},
+      SUNAMOUNT = #{sunamount,jdbcType=INTEGER},
+      BANK = #{bank,jdbcType=VARCHAR},
+      ACCOUNT = #{account,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      TOWN = #{town,jdbcType=VARCHAR},
+      VILLAGE = #{village,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      PROGRESS = #{progress,jdbcType=VARCHAR},
+      FINISHAMOUNT = #{finishamount,jdbcType=INTEGER},
+      FINISHSTATUS = #{finishstatus,jdbcType=VARCHAR},
+      INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+      INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+      UPDATECODE = #{updatecode,jdbcType=VARCHAR},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      CONFIRMCODE = #{confirmcode,jdbcType=VARCHAR},
+      CONFIRMTIME = #{confirmtime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+    <select id="getGgBuildingmstAll" parameterType="map" resultType="com.dsib.entity.GgBuildingmst">
+        select
+        <include refid="Base_Column_List"/>
+        from ggbuildingmst
+        where progress != '9'
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="county != null and county != ''">
+                and county = #{county}
+            </if>
+    </select>
+
+    <select id="getGgMessageBuildingmstPage" parameterType="com.dsib.common.Pagination" resultType="map">
+        select
+        id, householder, identityid, peoplenumber, type, grade, startyear, sunamount, bank,
+        account, province, city, county, town, village, address, progress, finishamount,
+        finishstatus, inputcode, inputtime, updatecode, updatetime, confirmcode, confirmtime, status
+        from
+        ggbuildingmst
+        where `status` = '3'
+        <choose>
+            <when test="queryCondition.progress != null and queryCondition.progress != ''">
+                and progress = #{queryCondition.progress}
+            </when>
+            <otherwise>
+                and progress != 9
+            </otherwise>
+        </choose>
+        <if test="queryCondition.province != null and queryCondition.province != ''">
+            and province = #{queryCondition.province}
+        </if>
+        <if test="queryCondition.county != null and queryCondition.county!= ''">
+            and county = #{queryCondition.county}
+        </if>
+        <if test="queryCondition.city != null and queryCondition.city != ''">
+            and city = #{queryCondition.city}
+        </if>
+        <if test="queryCondition.type != null and queryCondition.type != ''">
+            and type = #{queryCondition.type}
+        </if>
+        <if test="queryCondition.grade != null and queryCondition.grade != ''">
+            and grade = #{queryCondition.grade}
+        </if>
+        <if test="queryCondition.startyear != null and queryCondition.startyear != ''">
+            and startyear = #{queryCondition.startyear}
+        </if>
+        <if test="queryCondition.finishStatus != null and queryCondition.finishStatus != ''">
+            and finishStatus = #{queryCondition.finishStatus}
+        </if>
+        <if test="queryCondition.householder != null and queryCondition.householder != ''">
+            and householder like concat('%',#{queryCondition.householder},'%')
+        </if>
+        <if test="queryCondition.identityid != null and queryCondition.identityid != ''">
+            and identityid like concat('%',#{queryCondition.identityid},'%')
+        </if>
+        <if test="queryCondition.bank != null and queryCondition.bank != ''">
+            and bank = #{queryCondition.bank}
+        </if>
+        <if test="queryCondition.account != null and queryCondition.account != ''">
+            and account like concat('%',#{queryCondition.account},'%')
+        </if>
+        <if test="queryCondition.startDate != null and queryCondition.startDate != '' and queryCondition.endDate != null and queryCondition.endDate != ''">
+            and startDate between #{queryCondition.startDate} and #{queryCondition.endDate}
+        </if>
+    </select>
+
+    <select id="getGgMessageBuildingmstExcel" parameterType="map" resultType="map">
+        select
+        ID, HOUSEHOLDER, IDENTITYID, PEOPLENUMBER,
+        (select codecname from ggcode where codetype = 'povertyType' and codecode = TYPE) as TYPE,
+        (select codecname from ggcode where codetype = 'grade' and codecode = GRADE) as GRADE, STARTYEAR, SUNAMOUNT,
+        (select codecname from ggcode where codetype = 'banktype' and codecode = BANK) as BANK,
+        ACCOUNT, PROVINCE,
+        (select codecname from ggcode where codetype = 'city' and codecode = CITY) as CITY,
+        (select codecname from ggcode where codetype = 'county' and codecode = COUNTY) as COUNTY,
+        TOWN, VILLAGE, ADDRESS, PROGRESS, FINISHAMOUNT,
+        (select codecname from ggcode where codetype = 'FinishStatus' and codecode = FINISHSTATUS) as FINISHSTATUS,
+        INPUTCODE, INPUTTIME, UPDATECODE, UPDATETIME, CONFIRMCODE, CONFIRMTIME, STATUS
+        from
+        ggbuildingmst
+        where `status` = '3'
+        <choose>
+            <when test="progress != null and progress != ''">
+                and progress = #{progress}
+            </when>
+            <otherwise>
+                and progress != 9
+            </otherwise>
+        </choose>
+        <if test="province != null and province != ''">
+            and province = #{province}
+        </if>
+        <if test="county != null and county!= ''">
+            and county = #{county}
+        </if>
+        <if test="city != null and city != ''">
+            and city = #{city}
+        </if>
+        <if test="type != null and type != ''">
+            and type = #{type}
+        </if>
+        <if test="grade != null and grade != ''">
+            and grade = #{grade}
+        </if>
+        <if test="startyear != null and startyear != ''">
+            and startyear = #{startyear}
+        </if>
+        <if test="finishStatus != null and finishStatus != ''">
+            and finishStatus = #{finishStatus}
+        </if>
+        <if test="householder != null and householder != ''">
+            and householder like concat('%',#{householder},'%')
+        </if>
+        <if test="identityid != null and identityid != ''">
+            and identityid like concat('%',#{identityid},'%')
+        </if>
+        <if test="bank != null and bank != ''">
+            and bank = #{bank}
+        </if>
+        <if test="account != null and account != ''">
+            and account like concat('%',#{account},'%')
+        </if>
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+            and startDate between #{startDate} and #{endDate}
+        </if>
+    </select>
+
+    <select id="getGgBuildingmstPage" parameterType="com.dsib.common.Pagination" resultType="map">
+        select null as businessno,id,householder,identityid as identityid,peoplenumber,type,
+        grade,startyear,sunamount,bank,account,province,city,county,town,
+        village,address,progress,finishamount,finishstatus,inputcode,inputtime,
+        status
+        from ggbuildingmst where `status` = '3' and finishstatus = '0'
+          <choose>
+              <when test="queryCondition.progress != null and queryCondition.progress != ''">
+                  and progress = #{queryCondition.progress}
+              </when>
+              <otherwise>
+                  and progress != 9
+              </otherwise>
+          </choose>
+            <if test="queryCondition.province != null and queryCondition.province != ''">
+                and province = #{queryCondition.province}
+            </if>
+            <if test="queryCondition.county != null and queryCondition.county!= ''">
+                and county = #{queryCondition.county}
+            </if>
+            <if test="queryCondition.city != null and queryCondition.city != ''">
+                and city = #{queryCondition.city}
+            </if>
+            <if test="queryCondition.type != null and queryCondition.type != ''">
+                and type = #{queryCondition.type}
+            </if>
+            <if test="queryCondition.grade != null and queryCondition.grade != ''">
+                and grade = #{queryCondition.grade}
+            </if>
+            <if test="queryCondition.startyear != null and queryCondition.startyear != ''">
+                and startyear = #{queryCondition.startyear}
+            </if>
+            <if test="queryCondition.finishStatus != null and queryCondition.finishStatus != ''">
+                and finishStatus = #{queryCondition.finishStatus}
+            </if>
+            <if test="queryCondition.householder != null and queryCondition.householder != ''">
+                and householder like concat('%',#{queryCondition.householder},'%')
+            </if>
+            <if test="queryCondition.identityid != null and queryCondition.identityid != ''">
+                and identityid like concat('%',#{queryCondition.identityid},'%')
+            </if>
+            <if test="queryCondition.bank != null and queryCondition.bank != ''">
+                and bank = #{queryCondition.bank}
+            </if>
+            <if test="queryCondition.account != null and queryCondition.account != ''">
+                and account like concat('%',#{queryCondition.account},'%')
+            </if>
+            <if test="queryCondition.startDate != null and queryCondition.startDate != '' and queryCondition.endDate != null and queryCondition.endDate != ''">
+                and startDate between #{queryCondition.startDate} and #{queryCondition.endDate}
+            </if>
+        union
+        select businessno,id,householder,identityid ,peoplenumber,type,grade,startyear,sunamount,
+        bank,account,province,city,county,town,village,address,
+        progress,finishamount,finishstatus,inputcode,inputtime,status
+        from ggbuildingmst_his where `status` not in ('3','9') and finishstatus = '0'
+        <if test="queryCondition.province != null and queryCondition.province != ''">
+            and province = #{queryCondition.province}
+        </if>
+        <if test="queryCondition.county != null and queryCondition.county!= ''">
+            and county = #{queryCondition.county}
+        </if>
+        <if test="queryCondition.city != null and queryCondition.city != ''">
+            and city = #{queryCondition.city}
+        </if>
+        <if test="queryCondition.type != null and queryCondition.type != ''">
+            and type = #{queryCondition.type}
+        </if>
+        <if test="queryCondition.grade != null and queryCondition.grade != ''">
+            and grade = #{queryCondition.grade}
+        </if>
+        <if test="queryCondition.startyear != null and queryCondition.startyear != ''">
+            and startyear = #{queryCondition.startyear}
+        </if>
+        <if test="queryCondition.progress != null and queryCondition.progress != ''">
+            and progress = #{queryCondition.progress}
+        </if>
+        <if test="queryCondition.finishStatus != null and queryCondition.finishStatus != ''">
+            and finishStatus = #{queryCondition.finishStatus}
+        </if>
+        <if test="queryCondition.householder != null and queryCondition.householder != ''">
+            and householder like concat('%',#{queryCondition.householder},'%')
+        </if>
+        <if test="queryCondition.identityid != null and queryCondition.identityid != ''">
+            and identityid like concat('%',#{queryCondition.identityid},'%')
+        </if>
+        <if test="queryCondition.bank != null and queryCondition.bank != ''">
+            and bank = #{queryCondition.bank}
+        </if>
+        <if test="queryCondition.account != null and queryCondition.account != ''">
+            and account like concat('%',#{queryCondition.account},'%')
+        </if>
+        <if test="queryCondition.startDate != null and queryCondition.startDate != '' and queryCondition.endDate != null and queryCondition.endDate != ''">
+            and startDate between #{queryCondition.startDate} and #{queryCondition.endDate}
+        </if>
+    </select>
+
+
+    <select id="getByPrimaryKey" parameterType="string" resultType="com.dsib.entity.GgBuildingmst">
+        select
+        ID,
+        HOUSEHOLDER,
+        IDENTITYID,
+        PEOPLENUMBER,
+        (select codecname from ggcode where codecode = TYPE and codetype = 'povertyType') as TYPE,
+        (select codecname from ggcode where codecode = GRADE and codetype = 'grade') as GRADE,
+        STARTYEAR,
+        SUNAMOUNT,
+        (select codecname from ggcode where codecode = BANK and codetype = 'bankType') as BANK,
+        ACCOUNT,
+        (select codecname from ggcode where codecode = PROVINCE and codetype = 'Province') as PROVINCE,
+        (select codecname from ggcode where codecode = CITY and codetype = 'City') as CITY,
+        (select codecname from ggcode where codecode = COUNTY and codetype = 'County') as COUNTY,
+        TOWN,
+        VILLAGE,
+        ADDRESS,
+        (select codecname from ggcode where codecode = PROGRESS and codetype = 'Progress') as PROGRESS,
+        FINISHAMOUNT,
+        (select codecname from ggcode where codecode = FINISHSTATUS and codetype = 'FinishStatus') as FINISHSTATUS,
+        INPUTCODE,
+        INPUTTIME,
+        UPDATECODE,
+        UPDATETIME,
+        CONFIRMCODE,
+        CONFIRMTIME
+        from ggbuildingmst
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getGgBuildingmstAllJoin" parameterType="com.dsib.common.Pagination" resultType="map">
+        select bg.ID as IDS,
+        bg.HOUSEHOLDER as HOUSEHOLDER,
+        bg.IDENTITYID as IDENTITYID,
+        bg.PEOPLENUMBER as PEOPLENUMBER,
+        bg.TYPE as TYPE,
+        bg.GRADE as GRADE,
+        bg.STARTYEAR as STARTYEAR,
+        bg.SUNAMOUNT as SUNAMOUNT,
+        bg.BANK as BANK,
+        bg.ACCOUNT as ACCOUNT,
+        bg.PROVINCE as PROVINCE,
+        bg.CITY as CITY,
+        bg.COUNTY as COUNTY,
+        bg.TOWN as TOWN,
+        bg.VILLAGE as VILLAGE,
+        bg.ADDRESS as ADDRESS,
+        bg.PROGRESS as PROGRESS,
+        bg.FINISHAMOUNT as FINISHAMOUNT,
+        bg.FINISHSTATUS as FINISHSTATUS,
+        bg.INPUTCODE as INPUTCODE,
+        bg.INPUTTIME as INPUTTIME,
+        bg.UPDATECODE as UPDATECODE,
+        bg.UPDATETIME as UPDATETIME,
+        bg.CONFIRMCODE as CONFIRMCODE,
+        bg.CONFIRMTIME as CONFIRMTIME,
+        gp.ORDERNO as ORDERNO,
+        gp.ID as ID,
+        gp.PAYMENTDATE as PAYMENTDATE,
+        gp.OPERATETDATE as OPERATETDAT
+        from gupayment gp left join ggbuildingmst bg on bg.id = gp.id
+        <where>
+            <if test="queryCondition.county != null and queryCondition.county!= ''">
+                and bg.county = #{queryCondition.county}
+            </if>
+            <if test="queryCondition.city != null and queryCondition.city != ''">
+                and bg.city = #{queryCondition.city}
+            </if>
+            <if test="queryCondition.type != null and queryCondition.type != ''">
+                and bg.type = #{queryCondition.type}
+            </if>
+            <if test="queryCondition.grade != null and queryCondition.grade != ''">
+                and bg.grade = #{queryCondition.grade}
+            </if>
+            <if test="queryCondition.startyear != null and queryCondition.startyear != ''">
+                and bg.startyear = #{queryCondition.startyear}
+            </if>
+            <if test="queryCondition.finishStatus != null and queryCondition.finishStatus != ''">
+                and bg.finishStatus = #{queryCondition.finishStatus}
+            </if>
+            <if test="queryCondition.householder != null and queryCondition.householder != ''">
+                and bg.householder like concat('%',#{queryCondition.householder},'%')
+            </if>
+            <if test="queryCondition.identityid != null and queryCondition.identityid != ''">
+                and bg.identityid like concat('%',#{queryCondition.identityid},'%')
+            </if>
+            <if test="queryCondition.bank != null and queryCondition.bank != ''">
+                and bg.bank = #{queryCondition.bank}
+            </if>
+            <if test="queryCondition.account != null and queryCondition.account != ''">
+                and bg.account like concat('%',#{queryCondition.account},'%')
+            </if>
+            <if test="queryCondition.startDate != null and queryCondition.startDate != '' and queryCondition.endDate != null and queryCondition.endDate != ''">
+                and gp.OPERATETDATE between #{queryCondition.startDate} and #{queryCondition.endDate}
+            </if>
+            <choose>
+                <when test="queryCondition.progress != null and queryCondition.progress != ''">
+                    and bg.progress = #{queryCondition.progress}
+                </when>
+                <otherwise>
+                    and bg.progress != 9
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getGgBuildingmstAllJoinMap" parameterType="map" resultType="map">
+        select
+        (select codecname from ggcode where codecode = bg.CITY) as CITY,
+        (select codecname from ggcode where codecode = bg.COUNTY) as COUNTY,
+        bg.HOUSEHOLDER as HOUSEHOLDER,
+        bg.IDENTITYID as IDENTITYID,
+        (select codecname from ggcode where codecode = bg.BANK) as BANK,
+        bg.ACCOUNT as ACCOUNT,
+        (select codecname from ggcode where codecode = bg.TYPE) as TYPE,
+        (select codecname from ggcode where codecode = bg.GRADE) as GRADE,
+        bg.STARTYEAR as STARTYEAR,
+        (select codecname from ggcode where codecode = bg.PROGRESS and codetype = 'Progress') as PROGRESS,
+        bg.FINISHAMOUNT as FINISHAMOUNT,
+        gp.PAYMENTDATE as PAYMENTDATE
+        from gupayment gp left join ggbuildingmst bg on bg.id = gp.id
+        <where>
+            <if test="county != null and county!= ''">
+                and bg.county = #{county}
+            </if>
+            <if test="type != null and type != ''">
+                and bg.type = #{type}
+            </if>
+            <if test="grade != null and grade != ''">
+                and bg.grade = #{grade}
+            </if>
+            <if test="startyear != null and startyear != ''">
+                and bg.startyear = #{startyear}
+            </if>
+
+            <if test="finishStatus != null and finishStatus != ''">
+                and bg.finishStatus = #{finishStatus}
+            </if>
+            <if test="householder != null and householder != ''">
+                and bg.householder like concat('%',#{householder},'%')
+            </if>
+            <if test="identityid != null and identityid != ''">
+                and bg.identityid like concat('%',#{identityid},'%')
+            </if>
+            <if test="bank != null and bank != ''">
+                and bg.bank = #{bank}
+            </if>
+            <if test="account != null and account != ''">
+                and bg.account like concat('%',#{account},'%')
+            </if>
+            <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                and gp.OPERATETDATE between #{startDate} and #{endDate}
+            </if>
+            <choose>
+                <when test="progress != null and progress != ''">
+                    and bg.progress = #{progress}
+                </when>
+                <otherwise>
+                    and bg.PROGRESS != '9'
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+
+    <select id="getCityCashStatistics" parameterType="com.dsib.common.Pagination" resultType="map">
+        select
+        (select codecname from ggcode where codecode = city and codetype = 'City') as city,
+        (select codecname from ggcode where codecode = county and codetype = 'County') as county,
+        sum(case grade when '35000' then 1 else 0 end) one,
+        sum(case grade when '15000' then 1 else 0 end) tow,
+        sum(case grade when '10000' then 1 else 0 end) three,
+        sum(case progress when '0' then 1 else 0 end) notStartWork,
+        sum(case progress when '1' then 1 else 0 end) startWork,
+        sum(case progress when '2' then 1 else 0 end) onTheMarch,
+        sum(case progress when '3' then 1 else 0 end) stopWork,
+        sum(sunamount) sumAmount,
+        sum(finishamount) finishAmount
+        from ggbuildingmst
+        <where>
+            1 = 1
+            <if test="queryCondition.city != null and queryCondition.city != ''">
+                and city = #{queryCondition.city}
+            </if>
+            <if test="queryCondition.county != null and queryCondition.county != ''">
+                and county = #{queryCondition.county}
+            </if>
+            <if test="queryCondition.startyear != null and queryCondition.startyear != ''">
+                and startyear = #{queryCondition.startyear}
+            </if>
+        </where>
+        and PROGRESS != '9'
+        group by city,county
+    </select>
+    <select id="getCityCashStatisticsToMap" parameterType="map" resultType="map">
+        select
+        (select codecname from ggcode where codecode = city and codetype = 'City') as '市',
+        (select codecname from ggcode where codecode = county and codetype = 'County') as '县',
+        sum(case grade when '35000' then 1 else 0 end) '一级危房',
+        sum(case grade when '15000' then 1 else 0 end) '二级危房',
+        sum(case grade when '10000' then 1 else 0 end) '三级危房',
+        sum(case progress when '0' then 1 else 0 end) '未开工',
+        sum(case progress when '1' then 1 else 0 end) '开工',
+        sum(case progress when '2' then 1 else 0 end) '主基础工程',
+        sum(case progress when '3' then 1 else 0 end) '完工',
+        sum(sunamount) '应付金额',
+        sum(finishamount) '已兑付金额'
+        from ggbuildingmst
+        <where>
+            1 = 1
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="county != null and county != ''">
+                and county = #{county}
+            </if>
+            <if test="startyear != null and startyear != ''">
+                and startyear = #{startyear}
+            </if>
+        </where>
+        and PROGRESS != '9'
+        group by city,county
+    </select>
+
+    <select id="getBuildingMstasByMap" parameterType="map" resultType="com.dsib.entity.GgBuildingmst">
+        select
+        ID,
+        HOUSEHOLDER,
+        IDENTITYID,
+        PEOPLENUMBER,
+        (select codecname from ggcode where codecode = TYPE and codetype = 'povertyType') as TYPE,
+        (select codecname from ggcode where codecode = GRADE and codetype = 'grade') as GRADE,
+        STARTYEAR,
+        SUNAMOUNT,
+        (select codecname from ggcode where codecode = BANK and codetype = 'bankType') as BANK,
+        ACCOUNT,
+        (select codecname from ggcode where codecode = PROVINCE and codetype = 'Province') as PROVINCE,
+        (select codecname from ggcode where codecode = CITY and codetype = 'City') as CITY,
+        (select codecname from ggcode where codecode = COUNTY and codetype = 'County') as COUNTY,
+        TOWN,
+        VILLAGE,
+        ADDRESS,
+        (select codecname from ggcode where codecode = PROGRESS and codetype = 'Progress') as PROGRESS,
+        FINISHAMOUNT,
+        (select codecname from ggcode where codecode = FINISHSTATUS and codetype = 'FinishStatus') as FINISHSTATUS,
+        INPUTCODE,
+        INPUTTIME,
+        UPDATECODE,
+        UPDATETIME,
+        CONFIRMCODE,
+        CONFIRMTIME
+        from ggbuildingmst
+        where 1 = 1 and finishstatus = '0'
+            <if test="identityid != null and identityid != ''">
+                and identityid like concat('%',#{identityid},'%')
+            </if>
+            <if test="householder != null and householder != ''">
+                and householder like concat('%',#{householder},'%')
+            </if>
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="county != null and county != ''">
+                and county = #{county}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="ids != null and ids != ''">
+                and id not in ${ids}
+            </if>
+            and PROGRESS != '9'
+    </select>
+
+    <select id="retrieveBuildingMst" parameterType="string" resultType="map">
+        select
+        gb.ID as id,
+        gb.HOUSEHOLDER as householder,
+        gb.IDENTITYID as identityid,
+        gb.PEOPLENUMBER as peoplenumber,
+        gb.TYPE as type,
+        gb.GRADE as grade,
+        gb.STARTYEAR as startyear,
+        gb.SUNAMOUNT as sunamount,
+        gb.BANK as bank,
+        gb.ACCOUNT as account,
+        gb.PROVINCE as province,
+        gb.CITY as city,
+        gb.COUNTY as county,
+        gb.TOWN as town,
+        gb.VILLAGE as village,
+        gb.ADDRESS as address,
+        gb.PROGRESS as progress,
+        gb.FINISHAMOUNT as finishamount,
+        gb.FINISHSTATUS as finishstatus,
+        gb.INPUTCODE as inputcode,
+        gb.INPUTTIME as inputtime,
+        gb.UPDATECODE as updatecode,
+        gb.UPDATETIME as updatetime,
+        gb.CONFIRMCODE as confirmcode,
+        gb.CONFIRMTIME as confirmtime,
+        gb.status as flag
+	  from ggbuildingmst gb
+        where gb.id = #{id} and gb.PROGRESS != '9'
+    </select>
+    <select id="retrieveBuildingMstBuObject" parameterType="string" resultType="com.dsib.dto.UpdateBuildingMst">
+      select
+            (case gb.status when '3' then gb.ID else gbh.ID end) as id,
+            (case gb.status when '3' then gb.HOUSEHOLDER else gbh.HOUSEHOLDER end) as householder,
+            (case gb.status when '3' then gb.IDENTITYID else gbh.IDENTITYID end) as identityid,
+            (case gb.status when '3' then gb.PEOPLENUMBER else gbh.PEOPLENUMBER end) as peoplenumber,
+            (case gb.status when '3' then gb.TYPE else gbh.TYPE end) as type,
+            (case gb.status when '3' then gb.GRADE else gbh.GRADE end) as grade,
+            (case gb.status when '3' then gb.STARTYEAR else gbh.STARTYEAR end) as startyear,
+            (case gb.status when '3' then gb.SUNAMOUNT else gbh.SUNAMOUNT end) as sunamount,
+            (case gb.status when '3' then gb.BANK else gbh.BANK end) as bank,
+            (case gb.status when '3' then gb.ACCOUNT else gbh.ACCOUNT end) as account,
+            (case gb.status when '3' then gb.PROVINCE else gbh.PROVINCE end) as province,
+            (case gb.status when '3' then gb.CITY else gbh.CITY end) as city,
+            (case gb.status when '3' then gb.COUNTY else gbh.COUNTY end) as county,
+            (case gb.status when '3' then gb.TOWN else gbh.TOWN end) as town,
+            (case gb.status when '3' then gb.VILLAGE else gbh.VILLAGE end) as village,
+            (case gb.status when '3' then gb.ADDRESS else gbh.ADDRESS end) as address,
+            (case gb.status when '3' then gb.PROGRESS else gbh.PROGRESS end) as progress,
+            (case gb.status when '3' then gb.FINISHAMOUNT else gbh.FINISHAMOUNT end) as finishamount,
+            (case gb.status when '3' then gb.FINISHSTATUS else gbh.FINISHSTATUS end) as finishstatus,
+            (case gb.status when '3' then gb.INPUTCODE else gbh.INPUTCODE end) as inputcode,
+            (case gb.status when '3' then gb.INPUTTIME else gbh.INPUTTIME end) as inputtime,
+            gb.UPDATECODE as updatecode,
+            gb.UPDATETIME as updatetime,
+            gb.CONFIRMCODE as confirmcode,
+            gb.CONFIRMTIME as confirmtime,
+            gb.status as flag,
+            gbh.businessno as businessno,
+            gbh.DISCRIPTION as discription,
+            gbh.FILEPATH as filepath
+	  from ggbuildingmst gb left join ggbuildingmst_his gbh on gb.id = gbh.id and gb.INPUTTIME = gbh.INPUTTIME
+      where gb.id = #{id} and gb.PROGRESS != '9'
+    </select>
+
+    <select id="retrieveGgBuildingMst" parameterType="string" resultType="int">
+        select count(*)
+        from ggbuildingmst
+        where IDENTITYID = #{identityId}
+    </select>
+
+    <update id="updateByStatus">
+        update ggbuildingmst
+        set status = #{status}
+        where id = #{id}
+    </update>
+
+</mapper>

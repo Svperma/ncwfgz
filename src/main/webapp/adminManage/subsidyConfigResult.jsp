@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>表单</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+
+		<link rel="stylesheet" href="${basePath }/plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="${basePath }/plugins/font-awesome/css/font-awesome.min.css">
+	</head>
+
+	<body>
+		<div class="layui-layout-admin" style="height:100%;padding:5px;">
+			<form class="layui-form" name="fm" action="${basePath }/adminManage/queryContinue">
+				<input type="hidden" name="method" value="${sessionScope.method }"> 
+				<table class="layui-table">
+				  <thead>
+					<tr>
+					  <th width="5%">序号</th>
+					  <th width="10%">地区</th>
+					  <th width="10%">险种</th>
+					  <th width="7%">中央补贴</th>
+					  <th width="7%">省级补贴</th>
+					  <th width="7%">市级补贴</th>
+					  <th width="7%">区县补贴</th>
+					  <th width="7%">个人缴纳</th>
+					  <th width="20%">操作</th>
+					</tr> 
+				  </thead>
+				  <tbody>
+				  	<c:forEach items="${sessionScope.configList }" var="news" varStatus="st">
+				  		<tr height="20px">
+					  		<td>${st.index+1 }</td>
+							<c:forEach items="${news }" var="va" begin="2">
+								<td>${va }</td>
+							</c:forEach>
+							<td>
+								 <a href="${basePath }/adminManage/subsidyUpdate?date=<%=Math.random() %><c:forEach items='${news }' var='va' begin='0' end='1'>&${va }</c:forEach>" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i> 修改</a>
+						  		 <a href="${basePath }/adminManage/subsidyDelete?t=1<c:forEach items='${news }' var='va' begin='0' end='1'>&${va }</c:forEach>" class="layui-btn layui-btn-danger"><i class="layui-icon">&#xe615;</i> 删除</a>	
+							</td>
+						</tr>
+				  	</c:forEach>
+				  </tbody>
+				</table>
+				<%@ include file="/jsp/common/pages.jsp" %>
+			</form>
+		</div>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+<!------------------------------------------------------------------------------------------------------------------------>
+		<script type="text/javascript" src="${basePath }/plugins/layui/layui.js"></script>
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function() {
+				var form = layui.form(),
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate;
+
+				//创建一个编辑器
+				var editIndex = layedit.build('LAY_demo_editor');
+				//自定义验证规则
+				form.verify({
+					title: function(value) {
+						if(value.length < 5) {
+							return '标题至少得5个字符啊';
+						}
+					},
+					pass: [/(.+){6,12}$/, '密码必须6到12位'],
+					content: function(value) {
+						layedit.sync(editIndex);
+					}
+				});
+
+				//监听提交
+				form.on('submit(demo1)', function(data) {
+					layer.alert(JSON.stringify(data.field), {
+						title: '最终的提交信息'
+					})
+					return false;
+				});
+			});
+		</script>
+		
+	</body>
+
+</html>

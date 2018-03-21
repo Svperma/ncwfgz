@@ -1,0 +1,51 @@
+var navs = [
+	{
+		"title": "首页",
+		"icon": "fa-stop-circle",
+		"href": "nong1.html",
+		"spread": true
+	},
+	{
+		"title": "改造户信息查看",
+		"icon": "fa-stop-circle",
+		"href": "nong2.html",
+		"spread": false
+	},
+	{
+		"title": "改造户信息管理",
+		"icon": "fa-stop-circle",
+		"href": "nong3.html",
+		"spread": false
+	},
+	{
+		"title": "兑付信息录入",
+		"icon": "fa-stop-circle",
+		"href": "nong4.html",
+		"spread": false
+	},
+	{
+		"title": "兑付记录查看",
+		"icon": "fa-stop-circle",
+		"href": "nong5.html",
+		"spread": false
+	},
+	{
+		"title": "兑付信息查看",
+		"icon": "fa-stop-circle",
+		"href": "nong6.html",
+		"spread": false
+	},
+	{
+		"title": "各地兑付情况",
+		"icon": "fa-stop-circle",
+		"href": "nong7.html",
+		"spread": false
+	},
+	{
+		"title": "用户管理",
+		"icon": "fa-stop-circle",
+		"href": "main10.html",
+		"spread": false
+	}
+
+ ];

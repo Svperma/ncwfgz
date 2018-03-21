@@ -1,0 +1,341 @@
+package com.dsib.controller;
+
+import com.dsib.common.Pagination;
+import com.dsib.dto.ParameterGgBuildingMst;
+import com.dsib.dto.PaymentResult;
+import com.dsib.dto.UploadParameter;
+import com.dsib.entity.*;
+import com.dsib.service.*;
+import com.dsib.util.FileUtil;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.annotation.Resource;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping(value = "/order")
+@SessionAttributes(value = {"pagination"})
+public class GuPaymentOrderController extends BaseController {
+
+    @Resource(name = "guPaymentOrderService")
+    public GuPaymentOrderService guPaymentOrderService;
+    @Resource(name = "guPaymentService")
+    public GuPaymentService guPaymentService;
+    @Resource(name = "ggPaymentTemService")
+    private GuPaymentTempService guPaymentTempService;
+    @Resource(name = "ggAuditConfigService")
+    private GgAuditConfigService ggAuditConfigService;
+    @Resource(name = "ggAuditService")
+    private GgAuditService ggAuditService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+    }
+
+    @RequestMapping(value = "/list")
+    public String getOrderList(Model model) {
+        GgUser user = (GgUser) session.getAttribute("ggUser");
+        String usercode = user.getUserCode();
+        List<GuPaymentOrder> orderList = guPaymentOrderService.getPaymentOrderByStatus(usercode, "0");
+        model.addAttribute("orderList", orderList);
+        String path = orderList.size() > 0 ? "/jsp/orderlist" : "/jsp/order";
+        return path;
+    }
+
+    @RequestMapping(value = "/updateorder")
+    public String getOrderByOrderNo(Model model, String orderNo) {
+        GuPaymentOrder guPaymentOrder = guPaymentOrderService.getOrderByNo(orderNo);
+        List<ParameterGgBuildingMst> list = guPaymentTempService.getTempByOrderNo(orderNo);
+        model.addAttribute("paymentOrder", guPaymentOrder);
+        model.addAttribute("list", list);
+        return "/jsp/order";
+    }
+
+
+    /**
+     * 临时保存
+     */
+    @RequestMapping(value = "/addOrder")
+    public String addOrder(UploadParameter uploadParameter) throws ParseException {
+        GgUser user = (GgUser) session.getAttribute("ggUser");
+        MultipartFile file = uploadParameter.getFile();
+        //获取文件名
+        String fileName = file.getOriginalFilename();
+        if (!"".equals(fileName)) {
+            //获取文件的后缀名
+            String subfix = fileName.substring(fileName.lastIndexOf("."));
+            //重命名文件
+            String newFileName = System.currentTimeMillis() + subfix;
+            String realPath = session.getServletContext().getRealPath("/");
+            realPath = realPath.substring(0, realPath.indexOf("webapps") + 8);
+            String newFilePath = realPath + "files\\" + newFileName;
+            try {
+                file.transferTo(new File(newFilePath));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String path = request.getContextPath();
+            String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+
+            uploadParameter.setFilePath(basePath + "files/" + newFileName);
+        } else {
+            uploadParameter.setFilePath(request.getParameter("file1"));
+        }
+        uploadParameter.setInputCode(user.getUserCode());
+        uploadParameter.setUpdateCode(user.getUserCode());
+        guPaymentTempService.insertOrderTem(uploadParameter);
+        return "redirect:/order/list";
+    }
+
+
+    /**
+     * 添加正式表
+     */
+    @RequestMapping(value = "/insertOrder")
+    public String insertOrder(UploadParameter uploadParameter) throws ParseException {
+        MultipartFile file = uploadParameter.getFile();
+        String fileName = file.getOriginalFilename();
+        if (!"".equals(fileName)) {
+            //获取文件的后缀名
+            String subfix = fileName.substring(fileName.lastIndexOf("."));
+            //重命名文件
+            String newFileName = System.currentTimeMillis() + subfix;
+            String realPath = session.getServletContext().getRealPath("/");
+            realPath = realPath.substring(0, realPath.indexOf("webapps") + 8);
+            String newFilePath = realPath + "files\\" + newFileName;
+            try {
+                file.transferTo(new File(newFilePath));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String path = request.getContextPath();
+            String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+
+            uploadParameter.setFilePath(basePath + "files/" + newFileName);
+        } else {
+            uploadParameter.setFilePath(request.getParameter("file1"));
+        }
+        GgUser user = (GgUser) session.getAttribute("ggUser");
+        GgAuditConfigKey key = new GgAuditConfigKey();
+        key.setAuditType("2");
+        key.setRoleCode(user.getRole());
+        GgAuditConfig auditConfig = ggAuditConfigService.selectByPrimaryKey(key);
+        uploadParameter.setInputCode(user.getUserCode());
+        uploadParameter.setUpdateCode(user.getUserCode());
+        uploadParameter.setAuditstatus("1");
+        uploadParameter.setAuditcode(auditConfig == null ? "" : auditConfig.getAuditCode());
+        guPaymentTempService.insertOrder(uploadParameter);
+        return "redirect:/order/list";
+    }
+
+    /**
+     * 兑付记录查看-查询功能
+     * 实现人：安伟卫
+     * 修改人：呼斯勒图
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/payments")
+    public String getFinishaMes(Model model) {
+        Pagination pagination = new Pagination();
+        Map<String, Object> map = new HashMap<>();
+        GgUser user = (GgUser) session.getAttribute("ggUser");
+        this.setMap(map,user);
+        map.put("startDate", request.getParameter("startDate"));
+        map.put("endDate", request.getParameter("endDate"));
+        map.put("householder", request.getParameter("householder"));
+        map.put("udebtutyid", request.getParameter("udebtutyid"));
+        pagination.setQueryCondition(map);
+        List<Map<String, Object>> resultList = guPaymentOrderService.getPayMentOrderByPag(pagination);
+        pagination.setResultList(resultList);
+        model.addAttribute("pagination", pagination);
+        return "/jsp/paymentList";
+    }
+
+    @RequestMapping(value = "/paymentsExcel")
+    public void getFinishaMesExcel(Model model) {
+        Map<String, Object> map = new HashMap<>();
+        GgUser user = (GgUser) session.getAttribute("ggUser");
+        this.setMap(map, user);
+        map.put("startDate", request.getParameter("startDate"));
+        map.put("endDate", request.getParameter("endDate"));
+        map.put("householder", request.getParameter("householder"));
+        map.put("udebtutyid", request.getParameter("udebtutyid"));
+        List<Map<String, Object>> resultList = guPaymentOrderService.getPayMentOrderByExcel(map);
+        String[] title = {"ORDERDATE:兑付日期","SUMQUANTITY:兑付危房数量","SUMAMOUNT:兑付金额","ATTACHMENTPATH:资料","INPUTCODE:录入人"};
+        FileUtil.exportToExcel(title,resultList,Map.class,"兑付记录",response);
+    }
+
+    //判断用户权限
+    private void setMap(Map map, GgUser user) {
+        String province = request.getParameter("province") == null ? "" : request.getParameter("province");
+        String city = request.getParameter("city") == null ? "" : request.getParameter("city");
+        String county = request.getParameter("county") == null ? "" : request.getParameter("county");
+        String vacancy = "".intern();
+
+        switch (user.getComLevel()) {
+            case "1":
+                map.put("province", vacancy.equals(province) ? user.getProvince() : province);
+                if (!vacancy.equals(city.trim())) {
+                    map.put("city", request.getParameter("city"));
+                }
+                if (!vacancy.equals(county.trim())) {
+                    map.put("county", request.getParameter("county"));
+                }
+                map.put("auditcode", "provinceAuditor"); //省级用户
+                break;
+            case "2":
+                map.put("province", vacancy.equals(province) ? user.getProvince() : province);
+                map.put("city", vacancy.equals(city) ? user.getCity() : city);
+                if (!vacancy.equals(county.trim())) {
+                    map.put("county", request.getParameter("county"));
+                }
+                map.put("auditcode", "cityAuditor");
+                break;
+            case "3":
+                map.put("province", vacancy.equals(province) ? user.getProvince() : province);
+                map.put("city", vacancy.equals(city) ? user.getCity() : city);
+                map.put("county", vacancy.equals(county) ? user.getCounty() : county);
+                map.put("auditcode", "countyAuditor");
+                break;
+        }
+    }
+
+
+    @RequestMapping(value = "/paymentsPage")
+    public String getFinishaMesPage(Model model, @RequestParam("pageNo") String pageNo) {
+        Pagination pagination = (Pagination) session.getAttribute("pagination");
+        pagination.setPageNo(Integer.parseInt(pageNo));
+        List<Map<String, Object>> resultList = guPaymentOrderService.getPayMentOrderByPag(pagination);
+        pagination.setResultList(resultList);
+        model.addAttribute("pagination", pagination);
+        return "/jsp/paymentList";
+    }
+
+    @RequestMapping(value = "/retrieve")
+    public String retrievePaymentOrder(Model model, @RequestParam("orderNo") String orderNo) {
+        GuPaymentOrder paymentOrder = guPaymentOrderService.getOrderByNo(orderNo);
+        List<PaymentResult> payments = guPaymentService.getPaymentsByOrderNo(orderNo);
+        model.addAttribute("paymentOrder", paymentOrder);
+        model.addAttribute("payments", payments);
+        return "/jsp/paymentOne";
+    }
+
+    @RequestMapping("/paymentAudit")
+    public ModelAndView paymentAudit() {
+        ModelAndView mad = new ModelAndView();
+        GgUser ggUser = (GgUser) session.getAttribute("ggUser");
+        String role = ggUser.getRole();
+        Pagination pagination = new Pagination();
+        Map<String, String> conMap = new HashMap<String, String>();
+        conMap.put("auditCode", role);
+        conMap.put("auditStatus", "1");
+        String comLevel = ggUser.getComLevel();
+        if ("2".equals(comLevel)) {
+            conMap.put("city", ggUser.getCity());
+        } else if ("3".equals(comLevel)) {
+            conMap.put("county", ggUser.getCounty());
+        }
+        pagination.setQueryCondition(conMap);
+        List<GuPaymentOrder> orderList = guPaymentOrderService.listPaymentAudits(pagination);
+        pagination.setResultList(orderList);
+        mad.addObject("pagination", pagination);
+        mad.setViewName("/jsp/paymentAuditResult");
+        return mad;
+    }
+
+    @RequestMapping("/paymentAuditQuery")
+    public ModelAndView paymentAuditQuery() {
+        ModelAndView mad = new ModelAndView();
+        String orderNo = request.getParameter("orderNo");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        GgUser ggUser = (GgUser) session.getAttribute("ggUser");
+        String role = ggUser.getRole();
+        Pagination pagination = new Pagination();
+        Map<String, String> conMap = new HashMap<String, String>();
+        conMap.put("auditCode", role);
+        conMap.put("auditStatus", "1");
+        conMap.put("orderNo", orderNo);
+        conMap.put("startDate", startDate);
+        conMap.put("endDate", endDate);
+        pagination.setQueryCondition(conMap);
+        List<GuPaymentOrder> orderList = guPaymentOrderService.listPaymentAudits(pagination);
+        pagination.setResultList(orderList);
+        mad.addObject("pagination", pagination);
+        mad.setViewName("/jsp/paymentAuditResult");
+        return mad;
+    }
+
+    @RequestMapping("/paymentAuditQueryContinue")
+    public ModelAndView paymentAuditQueryContinue() {
+        ModelAndView mad = new ModelAndView();
+        String pageNo = request.getParameter("pageNo");
+        Pagination pagination = (Pagination) session.getAttribute("pagination");
+        pagination.setPageNo(Integer.valueOf(pageNo));
+        List<GuPaymentOrder> orderList = guPaymentOrderService.listPaymentAudits(pagination);
+        pagination.setResultList(orderList);
+        mad.addObject("pagination", pagination);
+        mad.setViewName("/jsp/paymentAuditResult");
+        return mad;
+    }
+
+    @RequestMapping("/prepareAudit")
+    public ModelAndView prepareAudit() {
+        ModelAndView mad = new ModelAndView();
+        String orderNo = request.getParameter("orderNo");
+        GuPaymentOrder guPaymentOrder = guPaymentOrderService.getOrderByNo(orderNo);
+        List<PaymentResult> paymentList = guPaymentService.getPaymentsByOrderNo(orderNo);
+        List<GgAudit> auditList = ggAuditService.listAudits(orderNo);
+        session.setAttribute("auditList", auditList);
+        session.setAttribute("guPaymentOrder", guPaymentOrder);
+        session.setAttribute("paymentList", paymentList);
+        mad.setViewName("/jsp/audit");
+        return mad;
+    }
+
+    @RequestMapping("/audit")
+    public ModelAndView audit(GgAudit audit) {
+        ModelAndView mad = new ModelAndView();
+        GgUser ggUser = (GgUser) session.getAttribute("ggUser");
+        audit.setAuditCode(ggUser.getUserCode());
+        audit.setAuditTime(new Date());
+        ggAuditService.insert(audit);
+        GgAuditConfigKey key = new GgAuditConfigKey();
+        key.setRoleCode(ggUser.getRole());
+        key.setAuditType("2");
+        GgAuditConfig auditConfig = ggAuditConfigService.selectByPrimaryKey(key);
+        GuPaymentOrder guPaymentOrder = guPaymentOrderService.getOrderByNo(audit.getId());
+        if (auditConfig == null) {
+            if ("1".equals(audit.getAuditStatus())) {
+                guPaymentOrder.setAuditstatus("3");
+            } else {
+                guPaymentOrder.setAuditstatus(audit.getAuditStatus());
+            }
+        } else {
+            guPaymentOrder.setAuditcode(auditConfig.getAuditCode());
+        }
+        guPaymentOrderService.updateByPrimaryKey(guPaymentOrder);
+        mad.setViewName("/jsp/paymentAudit");
+        return mad;
+    }
+}

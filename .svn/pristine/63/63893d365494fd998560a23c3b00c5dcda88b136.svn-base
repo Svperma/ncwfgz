@@ -1,0 +1,32 @@
+package com.dsib.dao;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+
+/**
+ * Created by acer on 2017/9/5.
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:spring-mybatis.xml")
+public class GgBuildingmstMapperTest {
+
+    @Autowired
+    private GgBuildingmstMapper ggBuildingmstMapper;
+
+    @Test
+    public void retrieveGgBuildingMst() throws Exception {
+        int i = ggBuildingmstMapper.retrieveGgBuildingMst("3209001197507048962");
+        System.out.println(i);
+
+    }
+
+
+}

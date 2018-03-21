@@ -1,0 +1,68 @@
+package com.dsib.controller;
+
+import com.dsib.entity.GgMenu;
+import com.dsib.entity.GgUser;
+import com.dsib.service.GgMenuService;
+import com.dsib.service.GgUserService;
+import com.dsib.util.FileUtil;
+import com.dsib.util.Md5Util;
+import net.sf.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import java.io.PrintWriter;
+import java.util.List;
+
+@Controller
+@RequestMapping("/loginController")
+public class GgLoginController extends BaseController {
+
+    @Resource(name = "ggUserService")
+    private GgUserService ggUserService;
+    @Resource(name = "ggMenuService")
+    private GgMenuService ggMenuService;
+
+    @RequestMapping("/login")
+    public void login(@RequestBody GgUser ggUser) {
+        String returnStr = "";
+        String pwd = ggUser.getPassword();
+        ggUser = ggUserService.getUserByUserCode(ggUser.getUserCode());
+        if (ggUser != null && !"".equals(ggUser)) {
+            String pwdMD5 = Md5Util.md5(pwd);
+            String password = ggUser.getPassword();
+            if (pwdMD5.equals(password)) {
+                String role = ggUser.getRole();
+                if ("admin".equals(role)) {
+                    returnStr = "admin";
+                } else {
+                    List<GgMenu> menuList = ggMenuService.listMenus(ggUser.getRole());
+                    String menuStr = FileUtil.listToMenuJson(menuList);
+                    session.setAttribute("menuList", menuStr);
+                    returnStr = "succ";
+                }
+                session.setAttribute("ggUser", ggUser);
+            } else {
+                returnStr = "pwdError";
+            }
+        } else {
+            returnStr = "userCodeError";
+        }
+        try {
+            PrintWriter out = response.getWriter();
+            JSONObject jo = JSONObject.fromObject("{'str':'" + returnStr + "'}");
+            out.write(jo.toString());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/quit")
+    public String quitlogin() {
+        session.invalidate();
+        return "/login";
+    }
+}

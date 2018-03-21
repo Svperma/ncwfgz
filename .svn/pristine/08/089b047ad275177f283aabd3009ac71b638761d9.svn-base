@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.dsib.entity.GgRole" >
+    <id column="ROLE_CODE" property="roleCode" jdbcType="VARCHAR" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+    <result column="UPDATE_CODE" property="updateCode" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="VALID_STATUS" property="validStatus" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ROLE_CODE, ROLE_NAME, UPDATE_CODE, UPDATE_TIME, VALID_STATUS, FLAG, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from GGROLE
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR} AND VALID_STATUS = '1'
+  </select>
+  
+  <select id="listRolesAll" resultMap="BaseResultMap" parameterType="Pagination" >
+    select 
+    <include refid="Base_Column_List" />
+    from GGROLE
+    where 1=1
+    AND VALID_STATUS = '1'
+  </select>
+  
+  <select id="listRoles" resultMap="BaseResultMap" parameterType="Pagination" >
+    select 
+    <include refid="Base_Column_List" />
+    from GGROLE
+    where 1=1
+    <if test="queryCondition.roleCode != null and queryCondition.roleCode != ''">
+    	AND ROLE_CODE = #{queryCondition.roleCode,jdbcType=VARCHAR}
+    </if>
+    <if test="queryCondition.roleName != null and queryCondition.roleName != ''">
+    	AND ROLE_NAME LIKE CONCAT('%',#{queryCondition.roleName,jdbcType=VARCHAR},'%')
+    </if>
+    AND VALID_STATUS = '1'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from GGROLE
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.dsib.entity.GgRole" >
+    insert into GGROLE (ROLE_CODE, ROLE_NAME, UPDATE_CODE, 
+      UPDATE_TIME, VALID_STATUS, FLAG, 
+      REMARK)
+    values (#{roleCode,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{updateCode,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=DATE}, #{validStatus,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dsib.entity.GgRole" >
+    insert into GGROLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleCode != null" >
+        ROLE_CODE,
+      </if>
+      <if test="roleName != null" >
+        ROLE_NAME,
+      </if>
+      <if test="updateCode != null" >
+        UPDATE_CODE,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="validStatus != null" >
+        VALID_STATUS,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleCode != null" >
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateCode != null" >
+        #{updateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="validStatus != null" >
+        #{validStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgRole" >
+    update GGROLE
+    <set >
+      <if test="roleName != null" >
+        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateCode != null" >
+        UPDATE_CODE = #{updateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="validStatus != null" >
+        VALID_STATUS = #{validStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgRole" >
+    update GGROLE
+    set ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      UPDATE_CODE = #{updateCode,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      VALID_STATUS = #{validStatus,jdbcType=VARCHAR},
+      FLAG = #{flag,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+  </update>
+  <select id="getGgRoleByObj" parameterType="com.dsib.entity.GgRole" resultMap="BaseResultMap">
+		SELECT * FROM GGROLE
+		<where>
+			1=1
+			<if test="roleCode != null and roleCode != ''">
+				AND ROLE_CODE=#{roleCode}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND REMARK = #{remark}
+			</if>
+				AND VALID_STATUS = '1'
+		</where>
+	</select>
+  
+</mapper>

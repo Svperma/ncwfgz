@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GgMenuMapper" >
+  <resultMap id="BaseResultMap" type="com.dsib.entity.GgMenu" >
+    <id column="MENU_CODE" property="menuCode" jdbcType="VARCHAR" />
+    <result column="MENU_NAME" property="menuName" jdbcType="VARCHAR" />
+    <result column="MENU_LEVEL" property="menuLevel" jdbcType="VARCHAR" />
+    <result column="UPPER_CODE" property="upperCode" jdbcType="VARCHAR" />
+    <result column="ICON" property="icon" jdbcType="VARCHAR" />
+    <result column="ACTION_URL" property="actionUrl" jdbcType="VARCHAR" />
+    <result column="VALID_STATUS" property="validStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_CODE" property="createCode" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="DISPLAY_NO" property="displayNo" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="menuResultMap" type="com.dsib.entity.GgMenu" >
+    <id column="MENU_CODE" property="menuCode" jdbcType="VARCHAR" />
+    <result column="MENU_NAME" property="menuName" jdbcType="VARCHAR" />
+    <result column="MENU_LEVEL" property="menuLevel" jdbcType="VARCHAR" />
+    <result column="UPPER_CODE" property="upperCode" jdbcType="VARCHAR" />
+    <result column="ICON" property="icon" jdbcType="VARCHAR" />
+    <result column="ACTION_URL" property="actionUrl" jdbcType="VARCHAR" />
+    <result column="VALID_STATUS" property="validStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_CODE" property="createCode" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="DISPLAY_NO" property="displayNo" jdbcType="VARCHAR" />
+    <association property="childList" column="MENU_CODE" select="listChildren"/>
+  </resultMap>
+  <select id="listChildren" parameterType="string" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from GGMENU
+    where UPPER_CODE = #{menuCode,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 菜单查询 -->
+  <select id="listMenus" parameterType="string" resultMap="menuResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from GGMENU 
+    where MENU_CODE IN (SELECT MENU_CODE FROM GGROLEMENU WHERE ROLE_CODE = #{roleCode}) 
+    AND VALID_STATUS = '1' 
+    AND MENU_LEVEL = '1'
+    ORDER BY DISPLAY_NO ASC
+  </select>
+  <sql id="Base_Column_List" >
+    MENU_CODE, MENU_NAME, MENU_LEVEL, UPPER_CODE, ICON, ACTION_URL, VALID_STATUS, CREATE_CODE, 
+    CREATE_TIME, FLAG, REMARK, DISPLAY_NO
+  </sql>
+  
+   <select id="listMenusByPagination" resultMap="BaseResultMap" parameterType="Pagination" >
+    select 
+    <include refid="Base_Column_List" />
+    from GGMENU
+    where 1=1
+    <if test="queryCondition.menuCode != null and queryCondition.menuCode != ''">
+    	AND MENU_CODE = #{queryCondition.menuCode}
+    </if>
+    <if test="queryCondition.menuName != null and queryCondition.menuName != ''">
+    	AND MENU_NAME LIKE CONCAT('%',#{queryCondition.menuName},'%')
+    </if>
+    ORDER BY DISPLAY_NO
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from GGMENU
+    where 1=1
+    <if test="menuCode != null and menuCode != ''">
+    	AND MENU_CODE = #{menuCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <select id="listMenusByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from GGMENU
+    where 1=1
+    <if test="_parameter != null and _parameter != ''">
+    	AND MENU_CODE = #{_parameter,jdbcType=VARCHAR}
+    </if>
+    order by DISPLAY_NO
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from GGMENU
+    where MENU_CODE = #{menuCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.dsib.entity.GgMenu" >
+    insert into GGMENU (MENU_CODE, MENU_NAME, MENU_LEVEL, 
+      UPPER_CODE, ICON, ACTION_URL, 
+      VALID_STATUS, CREATE_CODE, CREATE_TIME, 
+      FLAG, REMARK, DISPLAY_NO
+      )
+    values (#{menuCode,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{menuLevel,jdbcType=VARCHAR}, 
+      #{upperCode,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{actionUrl,jdbcType=VARCHAR}, 
+      #{validStatus,jdbcType=VARCHAR}, #{createCode,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, 
+      #{flag,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{displayNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dsib.entity.GgMenu" >
+    insert into GGMENU
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="menuCode != null" >
+        MENU_CODE,
+      </if>
+      <if test="menuName != null" >
+        MENU_NAME,
+      </if>
+      <if test="menuLevel != null" >
+        MENU_LEVEL,
+      </if>
+      <if test="upperCode != null" >
+        UPPER_CODE,
+      </if>
+      <if test="icon != null" >
+        ICON,
+      </if>
+      <if test="actionUrl != null" >
+        ACTION_URL,
+      </if>
+      <if test="validStatus != null" >
+        VALID_STATUS,
+      </if>
+      <if test="createCode != null" >
+        CREATE_CODE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="displayNo != null" >
+        DISPLAY_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="menuCode != null" >
+        #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        #{menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="upperCode != null" >
+        #{upperCode,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null" >
+        #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="validStatus != null" >
+        #{validStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createCode != null" >
+        #{createCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="displayNo != null" >
+        #{displayNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GgMenu" >
+    update GGMENU
+    <set >
+      <if test="menuName != null" >
+        MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        MENU_LEVEL = #{menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="upperCode != null" >
+        UPPER_CODE = #{upperCode,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null" >
+        ICON = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null" >
+        ACTION_URL = #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="validStatus != null" >
+        VALID_STATUS = #{validStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createCode != null" >
+        CREATE_CODE = #{createCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="displayNo != null" >
+        DISPLAY_NO = #{displayNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MENU_CODE = #{menuCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GgMenu" >
+    update GGMENU
+    set MENU_NAME = #{menuName,jdbcType=VARCHAR},
+      MENU_LEVEL = #{menuLevel,jdbcType=VARCHAR},
+      UPPER_CODE = #{upperCode,jdbcType=VARCHAR},
+      ICON = #{icon,jdbcType=VARCHAR},
+      ACTION_URL = #{actionUrl,jdbcType=VARCHAR},
+      VALID_STATUS = #{validStatus,jdbcType=VARCHAR},
+      CREATE_CODE = #{createCode,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=DATE},
+      FLAG = #{flag,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      DISPLAY_NO = #{displayNo,jdbcType=VARCHAR}
+    where MENU_CODE = #{menuCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

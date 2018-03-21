@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dsib.dao.GuPaymentOrderMapper">
+    <resultMap id="BaseResultMap" type="com.dsib.entity.GuPaymentOrder">
+        <id column="ORDERNO" property="orderno" jdbcType="VARCHAR"/>
+        <result column="ORDERDATE" property="orderdate" jdbcType="TIMESTAMP"/>
+        <result column="SUMQUANTITY" property="sumquantity" jdbcType="INTEGER"/>
+        <result column="SUMAMOUNT" property="sumamount" jdbcType="INTEGER"/>
+        <result column="ATTACHMENTPATH" property="attachmentpath" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="AUDITSTATUS" property="auditstatus" jdbcType="VARCHAR"/>
+        <result column="AUDITCODE" property="auditcode" jdbcType="VARCHAR"/>
+        <result column="INPUTCODE" property="inputcode" jdbcType="VARCHAR"/>
+        <result column="INPUTTIME" property="inputtime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATECODE" property="updatecode" jdbcType="VARCHAR"/>
+        <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="CONFIRMCODE" property="confirmcode" jdbcType="VARCHAR"/>
+        <result column="CONFIRMTIME" property="confirmtime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ORDERNO, ORDERDATE, SUMQUANTITY, SUMAMOUNT, ATTACHMENTPATH, STATUS,AUDITSTATUS,AUDITCODE, INPUTCODE, INPUTTIME, 
+    UPDATECODE, UPDATETIME, CONFIRMCODE, CONFIRMTIME
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from gupaymentorder
+        where ORDERNO = #{orderno,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from gupaymentorder
+    where ORDERNO = #{orderno,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.dsib.entity.GuPaymentOrder">
+    insert into gupaymentorder (ORDERNO, ORDERDATE, SUMQUANTITY,
+      SUMAMOUNT, ATTACHMENTPATH, STATUS,AUDITSTATUS, AUDITCODE,
+      INPUTCODE, INPUTTIME, UPDATECODE, 
+      UPDATETIME, CONFIRMCODE, CONFIRMTIME
+      )
+    values (#{orderno,jdbcType=VARCHAR}, #{orderdate,jdbcType=TIMESTAMP}, #{sumquantity,jdbcType=INTEGER}, 
+      #{sumamount,jdbcType=INTEGER}, #{attachmentpath,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{auditstatus,jdbcType=VARCHAR}, 
+      #{auditcode,jdbcType=VARCHAR},#{inputcode,jdbcType=VARCHAR}, #{inputtime,jdbcType=TIMESTAMP}, #{updatecode,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{confirmcode,jdbcType=VARCHAR}, #{confirmtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.dsib.entity.GuPaymentOrder">
+        insert into gupaymentorder
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderno != null">
+                ORDERNO,
+            </if>
+            <if test="orderdate != null">
+                ORDERDATE,
+            </if>
+            <if test="sumquantity != null">
+                SUMQUANTITY,
+            </if>
+            <if test="sumamount != null">
+                SUMAMOUNT,
+            </if>
+            <if test="attachmentpath != null">
+                ATTACHMENTPATH,
+            </if>
+            <if test="auditstatus != null">
+                AUDITSTATUS,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="auditstatus != null">
+                AUDITCODE,
+            </if>
+            <if test="inputcode != null">
+                INPUTCODE,
+            </if>
+            <if test="inputtime != null">
+                INPUTTIME,
+            </if>
+            <if test="updatecode != null">
+                UPDATECODE,
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME,
+            </if>
+            <if test="confirmcode != null">
+                CONFIRMCODE,
+            </if>
+            <if test="confirmtime != null">
+                CONFIRMTIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderno != null">
+                #{orderno,jdbcType=VARCHAR},
+            </if>
+            <if test="orderdate != null">
+                #{orderdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sumquantity != null">
+                #{sumquantity,jdbcType=INTEGER},
+            </if>
+            <if test="sumamount != null">
+                #{sumamount,jdbcType=INTEGER},
+            </if>
+            <if test="attachmentpath != null">
+                #{attachmentpath,jdbcType=VARCHAR},
+            </if>
+            <if test="auditstatus != null">
+                #{auditstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+             <if test="auditcode != null">
+                #{auditcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputcode != null">
+                #{inputcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputtime != null">
+                #{inputtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatecode != null">
+                #{updatecode,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmcode != null">
+                #{confirmcode,jdbcType=VARCHAR},
+            </if>
+            <if test="confirmtime != null">
+                #{confirmtime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.dsib.entity.GuPaymentOrder">
+        update gupaymentorder
+        <set>
+            <if test="orderdate != null">
+                ORDERDATE = #{orderdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sumquantity != null">
+                SUMQUANTITY = #{sumquantity,jdbcType=INTEGER},
+            </if>
+            <if test="sumamount != null">
+                SUMAMOUNT = #{sumamount,jdbcType=INTEGER},
+            </if>
+            <if test="attachmentpath != null">
+                ATTACHMENTPATH = #{attachmentpath,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="auditstatus != null">
+                AUDITSTATUS = #{auditstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="auditcode != null">
+                AUDITCODE = #{auditcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputcode != null">
+                INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+            </if>
+            <if test="inputtime != null">
+                INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatecode != null">
+                UPDATECODE = #{updatecode,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmcode != null">
+                CONFIRMCODE = #{confirmcode,jdbcType=VARCHAR},
+            </if>
+            <if test="confirmtime != null">
+                CONFIRMTIME = #{confirmtime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ORDERNO = #{orderno,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.dsib.entity.GuPaymentOrder">
+    update gupaymentorder
+    set ORDERDATE = #{orderdate,jdbcType=TIMESTAMP},
+      SUMQUANTITY = #{sumquantity,jdbcType=INTEGER},
+      SUMAMOUNT = #{sumamount,jdbcType=INTEGER},
+      ATTACHMENTPATH = #{attachmentpath,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      AUDITSTATUS = #{auditstatus,jdbcType=VARCHAR},
+      AUDITCODE = #{auditcode,jdbcType=VARCHAR},
+      INPUTCODE = #{inputcode,jdbcType=VARCHAR},
+      INPUTTIME = #{inputtime,jdbcType=TIMESTAMP},
+      UPDATECODE = #{updatecode,jdbcType=VARCHAR},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      CONFIRMCODE = #{confirmcode,jdbcType=VARCHAR},
+      CONFIRMTIME = #{confirmtime,jdbcType=TIMESTAMP}
+    where ORDERNO = #{orderno,jdbcType=VARCHAR}
+
+  </update>
+
+    <select id="getPaymentOrder" parameterType="map" resultType="com.dsib.entity.GuPaymentOrder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from gupaymentorder
+        where 1 = 1
+        <choose>
+            <when test="comLevel == 2">
+                and substr(inputcode, 1, 4) = substr(#{userCode}, 1, 4)
+            </when>
+            <when test="comLevel == 3">
+                and substr(inputcode, 1, 6) = substr(#{userCode}, 1, 6)
+            </when>
+        </choose>
+        <if test="status != null and status != ''">
+            and status = #{status}
+        </if>
+        <choose>
+            <when test="auditStatus != null and auditStatus != ''">
+                and auditStatus in (${auditStatus})
+            </when>
+            <otherwise>
+                and auditStatus != '3'
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getPaymentOrderByStatus" resultType="com.dsib.entity.GuPaymentOrder">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from gupaymentorder
+        <where>
+            <if test="userCodes != null and userCodes.size() > 0">
+               and inputcode in (select  usercode from gguser where role in
+                <foreach collection="userCodes" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <choose>
+                <when test="auditStatus != null and auditStatus != ''">
+                    and auditStatus in (${auditStatus})
+                </when>
+                <otherwise>
+                    and auditStatus != '3'
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getPaymentOrderByPag" parameterType="com.dsib.common.Pagination" resultType="map">
+        SELECT
+        ORDERNO, ORDERDATE, SUMQUANTITY, SUMAMOUNT, ATTACHMENTPATH, STATUS,AUDITSTATUS,AUDITCODE,
+        (SELECT USERNAME FROM gguser gu WHERE INPUTCODE = gu.USERCODE)INPUTCODE,
+        INPUTTIME, UPDATECODE, UPDATETIME, CONFIRMCODE, CONFIRMTIME
+        from gupaymentorder
+        <where>
+            <if test="queryCondition.city != null and queryCondition.city != ''">
+                and INPUTCODE in(select usercode from gguser where city=#{queryCondition.city})
+            </if>
+            <if test="queryCondition.county != null and queryCondition.county != ''">
+                and INPUTCODE in(select usercode from gguser where county=#{queryCondition.county})
+            </if>
+            <if test="queryCondition.householder != null and queryCondition.householder != '' or queryCondition.identityid != null and queryCondition.identityid != '' ">
+                and ORDERNO in(select p.ORDERNO from GGBUILDINGMST b,GUPAYMENT p
+                <where>
+                    b.ID=p.ID
+                    <if test="queryCondition.householder != null and queryCondition.householder != ''">
+                        and b.HOUSEHOLDER like concat('%',#{queryCondition.householder},'%')
+                    </if>
+                    <if test="queryCondition.identityid != null and queryCondition.identityid != ''">
+                        and b.identityid like  concat('%',#{queryCondition.identityid},'%')
+                    </if>
+                </where>
+                )
+            </if>
+            <if test="queryCondition.startDate != null and queryCondition.startDate != ''  and queryCondition.endDate != null and queryCondition.endDate != ''">
+               and ORDERDATE BETWEEN #{queryCondition.startDate} and #{queryCondition.endDate}
+
+            </if>
+        </where>
+
+        ORDER BY status, AUDITSTATUS
+    </select>
+
+    <select id="getPaymentOrderByExcel" parameterType="map" resultType="map">
+        SELECT
+        ORDERDATE, SUMQUANTITY, SUMAMOUNT, ATTACHMENTPATH,
+        (SELECT USERNAME FROM gguser gu WHERE INPUTCODE = gu.USERCODE)INPUTCODE,
+        case auditstatus when 1 then '审核中' when 2 then '未通过' when 3 then '审核通过' end as 'auditstatus'
+        from gupaymentorder
+        <where>
+            <if test="city != null and city != ''">
+                and INPUTCODE in(select usercode from gguser where city=#{city})
+            </if>
+            <if test="county != null and county != ''">
+                and INPUTCODE in(select usercode from gguser where county=#{county})
+            </if>
+            <if test="householder != null and householder != '' or identityid != null and identityid != '' ">
+                and ORDERNO in(select p.ORDERNO from GGBUILDINGMST b,GUPAYMENT p
+                <where>
+                    b.ID=p.ID
+                    <if test="householder != null and householder != ''">
+                        and b.HOUSEHOLDER like concat('%',#{householder},'%')
+                    </if>
+                    <if test="identityid != null and identityid != ''">
+                        and b.identityid like  concat('%',#{identityid},'%')
+                    </if>
+                </where>
+                )
+            </if>
+            <if test="startDate != null and startDate != ''  and endDate != null and endDate != ''">
+                and ORDERDATE BETWEEN #{startDate} and #{endDate}
+
+            </if>
+        </where>
+    </select>
+    
+    <select id="listPaymentAudits" parameterType="Pagination" resultMap="BaseResultMap">
+    	 SELECT
+        <include refid="Base_Column_List"/>
+        from gupaymentorder  
+        <where>
+            <choose>
+                <when test="queryCondition.comLevel == 2">
+                    and substr(inputcode, 1, 4) = substr(#{queryCondition.userCode}, 1, 4)
+                </when>
+                <when test="queryCondition.comLevel == 3">
+                    and substr(inputcode, 1, 6) = substr(#{queryCondition.userCode}, 1, 6)
+                </when>
+            </choose>
+            <if test="queryCondition.status != null and queryCondition.status != ''">
+                and status = #{queryCondition.status}
+            </if>
+            <if test="queryCondition.orderNo != null and queryCondition.orderNo != ''">
+                and orderNo = #{queryCondition.orderNo}
+            </if>
+            <if test="queryCondition.auditCode != null and queryCondition.auditCode != ''">
+                and auditCode = #{queryCondition.auditCode}
+            </if>
+              <if test="queryCondition.inputcode != null and queryCondition.inputcode != ''">
+                and inputcode = substr(#{queryCondition.inputcode},1,6)
+            </if>
+            <if test="queryCondition.auditStatus != null and queryCondition.auditStatus != ''">
+                and auditstatus = #{queryCondition.auditStatus}
+            </if>
+            <if test="queryCondition.startDate != null and queryCondition.startDate != ''">
+                and orderDate &gt;= #{queryCondition.startDate}
+            </if>
+            <if test="queryCondition.endDate != null and queryCondition.endDate != ''">
+                and orderDate &lt;= #{queryCondition.endDate}
+            </if>
+        	
+        </where>
+    </select>
+</mapper>

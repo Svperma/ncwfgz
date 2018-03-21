@@ -1,0 +1,62 @@
+package com.dsib.service.impl;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.dsib.common.Pagination;
+import com.dsib.dao.GuPaymentOrderMapper;
+import com.dsib.entity.GuPaymentOrder;
+import com.dsib.service.GuPaymentOrderService;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+@Service(value = "guPaymentOrderService")
+public class GuPaymentOrderServiceImpl implements GuPaymentOrderService {
+
+    @Autowired
+    private GuPaymentOrderMapper guPaymentOrderMapper;
+
+    @Override
+    public List<GuPaymentOrder> getPaymentOrderByStatus(String userCode, String status) {
+        List<GuPaymentOrder> paymentOrders = guPaymentOrderMapper.getPaymentOrderByStatus(userCode, status);
+//        for(GuPaymentOrder guPaymentOrder : paymentOrders){
+//            String path = guPaymentOrder.getAttachmentpath();
+//            guPaymentOrder.setAttachmentpath(path);
+//        }
+        return paymentOrders;
+    }
+
+    @Override
+    public GuPaymentOrder getOrderByNo(String orderNo) {
+        GuPaymentOrder paymentOrder = guPaymentOrderMapper.selectByPrimaryKey(orderNo);
+//        String path = paymentOrder.getAttachmentpath();
+//        path = path == null ? "/" : path.substring(path.lastIndexOf('/'));
+//        paymentOrder.setAttachmentpath(path);
+        return paymentOrder;
+    }
+
+    @Override
+    public List<Map<String, Object>> getPayMentOrderByPag(Pagination pagination) {
+        return guPaymentOrderMapper.getPaymentOrderByPag(pagination);
+    }
+
+	@Override
+	public List<GuPaymentOrder> listPaymentAudits(Pagination pagination) {
+		List<GuPaymentOrder> list = guPaymentOrderMapper.listPaymentAudits(pagination);
+		return list;
+	}
+
+	@Override
+	public int updateByPrimaryKey(GuPaymentOrder record) {
+		int n = guPaymentOrderMapper.updateByPrimaryKey(record);
+		return n;
+	}
+
+    @Override
+    public List<Map<String, Object>> getPayMentOrderByExcel(Map<String, Object> map) {
+       return guPaymentOrderMapper.getPaymentOrderByExcel(map);
+    }
+}

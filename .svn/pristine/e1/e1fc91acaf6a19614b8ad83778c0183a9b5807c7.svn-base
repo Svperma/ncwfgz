@@ -1,0 +1,9 @@
+package com.dsib.service;
+
+import com.dsib.dto.PaymentResult;
+
+import java.util.List;
+
+public interface GuPaymentService {
+    List<PaymentResult> getPaymentsByOrderNo(String orderNo);
+}
